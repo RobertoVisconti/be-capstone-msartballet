@@ -25,6 +25,14 @@ public class Iscrizione {
     @Enumerated(EnumType.STRING)
     private StatoIscrizione stato;
 
+    @ManyToOne
+    @JoinColumn(name = "id_allievo", nullable = false)
+    private Allievo allievo;
+
+    @ManyToOne
+    @JoinColumn(name = "id_corso", nullable = false)
+    private Corso corso;
+
     public void setStato(StatoIscrizione stato) {
         this.stato = stato;
     }

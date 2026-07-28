@@ -1,10 +1,7 @@
 package robertovisconti.be_capstone_msartballet.entities;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,6 +26,18 @@ public class Transazione {
 
     @Column(name = "metodo_pagamento", nullable = false)
     private String metodoPagamento;
+
+    @ManyToOne
+    @JoinColumn(name = "id_utente", nullable = false)
+    private Utente utente;
+
+    @ManyToOne
+    @JoinColumn(name = "id_prodotto", nullable = false)
+    private Prodotto prodotto;
+
+    @ManyToOne
+    @JoinColumn(name = "id_corso")
+    private Corso corso;
 
     public Transazione(Double importo, String metodoPagamento) {
         this.importo = importo;

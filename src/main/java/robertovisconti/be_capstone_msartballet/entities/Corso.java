@@ -42,6 +42,10 @@ public class Corso {
     @Column(name = "prezzo_mensile", nullable = false)
     private Double prezzoMensile;
 
+    @ManyToOne
+    @JoinColumn(name = "id_disciplina", nullable = false)
+    private Disciplina disciplina;
+
     public Corso(String titolo, String descrizione, LivelloCorso livelloCorso, GiornoSettimana giornoSettimana, LocalTime oraInizio, LocalTime ora_fine, Double prezzoMensile) {
         this.titolo = titolo;
         this.descrizione = descrizione;

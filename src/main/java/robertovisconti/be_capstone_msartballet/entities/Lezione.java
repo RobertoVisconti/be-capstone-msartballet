@@ -1,9 +1,6 @@
 package robertovisconti.be_capstone_msartballet.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,6 +25,14 @@ public class Lezione {
 
     @Column(name = "prezzo_lezione", nullable = false)
     private Double prezzoLezione;
+
+    @ManyToOne
+    @JoinColumn(name = "id_corso", nullable = false)
+    private Corso corso;
+
+    @ManyToOne
+    @JoinColumn(name = "id_sala", nullable = false)
+    private Sala sala;
 
     public Lezione(LocalDateTime dataOraInizio, LocalDateTime dataOraFine, Double prezzoLezione) {
         this.dataOraInizio = dataOraInizio;

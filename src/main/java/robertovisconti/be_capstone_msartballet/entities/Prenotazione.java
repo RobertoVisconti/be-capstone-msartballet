@@ -25,7 +25,17 @@ public class Prenotazione {
     @Column(name = "data_prenotazione")
     private LocalDateTime dataPrenotazione = LocalDateTime.now();
 
+    @ManyToOne
+    @JoinColumn(name = "id_utente", nullable = false)
+    private Utente utente;
+
+    @ManyToOne
+    @JoinColumn(name = "id_lezione", nullable = false)
+    private Lezione lezione;
+
     public Prenotazione(StatoPrenotazione statoPrenotazione) {
         this.statoPrenotazione = statoPrenotazione;
     }
+
+
 }
