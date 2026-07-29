@@ -25,11 +25,11 @@ public class Prenotazione {
     @Column(name = "data_prenotazione")
     private LocalDateTime dataPrenotazione = LocalDateTime.now();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_utente", nullable = false)
     private Utente utente;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_lezione", nullable = false)
     private Lezione lezione;
 

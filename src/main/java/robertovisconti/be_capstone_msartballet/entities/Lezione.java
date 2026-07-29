@@ -30,7 +30,7 @@ public class Lezione {
     @JoinColumn(name = "id_corso", nullable = false)
     private Corso corso;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sala", nullable = false)
     private Sala sala;
 

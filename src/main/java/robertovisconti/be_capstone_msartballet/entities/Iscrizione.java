@@ -25,11 +25,11 @@ public class Iscrizione {
     @Enumerated(EnumType.STRING)
     private StatoIscrizione stato;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_allievo", nullable = false)
     private Allievo allievo;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_corso", nullable = false)
     private Corso corso;
 

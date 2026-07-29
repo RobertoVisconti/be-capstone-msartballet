@@ -27,15 +27,15 @@ public class Transazione {
     @Column(name = "metodo_pagamento", nullable = false)
     private String metodoPagamento;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_utente", nullable = false)
     private Utente utente;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_prodotto", nullable = false)
     private Prodotto prodotto;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_corso")
     private Corso corso;
 

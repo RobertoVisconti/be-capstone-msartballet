@@ -2,17 +2,20 @@ package robertovisconti.be_capstone_msartballet.entities;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import robertovisconti.be_capstone_msartballet.enums.LarghezzaPunte;
-import robertovisconti.be_capstone_msartballet.enums.RuoloUtente;
 
 import java.time.LocalDate;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "id_allievo")
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
+@Setter
 public class Allievo extends Utente {
 
     // calzatura mezza punta
@@ -48,76 +51,25 @@ public class Allievo extends Utente {
 
     // informazioni Mediche
 
-    @Column(name = "data_scadenza_certificato", nullable = false)
+    @Column(name = "data_scadenza_certificato")
     private LocalDate dataScadenzaCertificato;
 
-    @Column(name = "contatto_emergenza_nome", nullable = false)
+    @Column(name = "contatto_emergenza_nome")
     private String contattoEmergenzaNome;
 
-    @Column(name = "contatto_emergenza_telefono", nullable = false)
+    @Column(name = "contatto_emergenza_telefono")
     private String contattoEmergenzaTelefono;
 
-    public Allievo(String nome, String cognome, String email, String password, String imgProfilo, RuoloUtente ruolo, LocalDate dataDiNascita, String numeroScarpetta, String marcaScarpetta, Boolean haPunte, String marcaPunte, LarghezzaPunte larghezzaPunte, String tagliaBody, String tagliaCalzini, Integer altezzaCm, String tagliaPantalone, LocalDate dataScadenzaCertificato, String contattoEmergenzaNome, String contattoEmergenzaTelefono) {
-        super(nome, cognome, email, password, imgProfilo, ruolo, dataDiNascita);
-        this.numeroScarpetta = numeroScarpetta;
-        this.marcaScarpetta = marcaScarpetta;
-        this.haPunte = haPunte;
-        this.marcaPunte = marcaPunte;
-        this.larghezzaPunte = larghezzaPunte;
-        this.tagliaBody = tagliaBody;
-        this.tagliaCalzini = tagliaCalzini;
-        this.altezzaCm = altezzaCm;
-        this.tagliaPantalone = tagliaPantalone;
-        this.dataScadenzaCertificato = dataScadenzaCertificato;
-        this.contattoEmergenzaNome = contattoEmergenzaNome;
-        this.contattoEmergenzaTelefono = contattoEmergenzaTelefono;
-    }
+    // dati amministrativi
+    @Column(name = "codice_fiscale")
+    private String codiceFiscale;
 
-    public void setNumeroScarpetta(String numeroScarpetta) {
-        this.numeroScarpetta = numeroScarpetta;
-    }
+    @Column(name = "quota_iscrizione_pagata")
+    private Boolean quotaIscrizionePagata = false;
 
-    public void setMarcaScarpetta(String marcaScarpetta) {
-        this.marcaScarpetta = marcaScarpetta;
-    }
+    @Column(name = "consenso_privacy_foto")
+    private Boolean consensoPrivacyFoto = false;
 
-    public void setHaPunte(Boolean haPunte) {
-        this.haPunte = haPunte;
-    }
-
-    public void setMarcaPunte(String marcaPunte) {
-        this.marcaPunte = marcaPunte;
-    }
-
-    public void setLarghezzaPunte(LarghezzaPunte larghezzaPunte) {
-        this.larghezzaPunte = larghezzaPunte;
-    }
-
-    public void setTagliaBody(String tagliaBody) {
-        this.tagliaBody = tagliaBody;
-    }
-
-    public void setTagliaCalzini(String tagliaCalzini) {
-        this.tagliaCalzini = tagliaCalzini;
-    }
-
-    public void setAltezzaCm(Integer altezzaCm) {
-        this.altezzaCm = altezzaCm;
-    }
-
-    public void setTagliaPantalone(String tagliaPantalone) {
-        this.tagliaPantalone = tagliaPantalone;
-    }
-
-    public void setDataScadenzaCertificato(LocalDate dataScadenzaCertificato) {
-        this.dataScadenzaCertificato = dataScadenzaCertificato;
-    }
-
-    public void setContattoEmergenzaNome(String contattoEmergenzaNome) {
-        this.contattoEmergenzaNome = contattoEmergenzaNome;
-    }
-
-    public void setContattoEmergenzaTelefono(String contattoEmergenzaTelefono) {
-        this.contattoEmergenzaTelefono = contattoEmergenzaTelefono;
-    }
+    @Column(name = "note_segretieria", columnDefinition = "TEXT")
+    private String noteSegreteria;
 }

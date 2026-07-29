@@ -42,7 +42,7 @@ public class Corso {
     @Column(name = "prezzo_mensile", nullable = false)
     private Double prezzoMensile;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_disciplina", nullable = false)
     private Disciplina disciplina;
 
