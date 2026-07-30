@@ -1,4 +1,4 @@
-package robertovisconti.be_capstone_msartballet.payloadsDTO;
+package robertovisconti.be_capstone_msartballet.payloadsDTO.loginDTO;
 
 import robertovisconti.be_capstone_msartballet.enums.RuoloUtente;
 
