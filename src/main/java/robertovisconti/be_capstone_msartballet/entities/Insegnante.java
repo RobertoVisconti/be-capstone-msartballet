@@ -22,4 +22,8 @@ public class Insegnante extends Utente {
         super(nome, cognome, email, password, imgProfilo, ruolo, dataDiNascita);
         this.biografia = biografia;
     }
+
+    public void setBiografia(String biografia) {
+        this.biografia = biografia;
+    }
 }
