@@ -10,31 +10,38 @@ public class IntervelloOrarioValidator implements ConstraintValidator<Intervallo
     private String campoFine;
 
     @Override
-    public void initialize(IntervalloOrarioValido annotazione){
+    public void initialize(IntervalloOrarioValido annotazione) {
         this.campoInizio = annotazione.campoInizio();
         this.campoFine = annotazione.campoFine();
     }
 
     @Override
-    public boolean isValid(Object dto, ConstraintValidatorContext context){
-        if(dto == null){
+    public boolean isValid(Object dto, ConstraintValidatorContext context) {
+        if (dto == null) {
             return true;
         }
         BeanWrapperImpl wrapper = new BeanWrapperImpl(dto);
         Object inizio = wrapper.getPropertyValue(campoInizio);
         Object fine = wrapper.getPropertyValue(campoFine);
 
-        if(inizio == null || fine == null){
+        if (inizio == null || fine == null) {
             return true;
         }
-        if (!(inizio instanceof Comparable) || !(fine instanceof Comparable)){
+        if (!(inizio instanceof Comparable) || !(fine instanceof Comparable)) {
             return true;
         }
 
-        @SuppressWarnings("u")
+        @SuppressWarnings("uncheked")
+        Comparable<Object> inizioComparabile = (Comparable<Object>) inizio;
+
+        boolean valido = inizioComparabile.compareTo(fine) < 0;
+        if (!valido) {
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
+                    .addPropertyNode(campoFine)
+                    .addConstraintViolation();
+        }
+        return valido;
     }
-
-
-
-
+    
 }

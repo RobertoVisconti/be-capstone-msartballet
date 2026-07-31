@@ -5,10 +5,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import robertovisconti.be_capstone_msartballet.enums.GiornoSettimana;
 import robertovisconti.be_capstone_msartballet.enums.LivelloCorso;
+import robertovisconti.be_capstone_msartballet.validations.IntervalloOrarioValido;
 
 import java.time.LocalTime;
 import java.util.UUID;
 
+
+@IntervalloOrarioValido(campoInizio = "oraInizio", campoFine = "oraFine")
 public record NewCorsoDTO(
 
         @NotBlank(message = "Il titolo è obbligatorio!")
@@ -35,6 +38,6 @@ public record NewCorsoDTO(
 
         @NotNull(message = "La disciplina è obbligatoria!")
         UUID idDisciplina
-        
+
 ) {
 }
