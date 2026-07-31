@@ -44,7 +44,7 @@ public class AuthService {
         nuovoAllievo.setNome(body.nome());
         nuovoAllievo.setCognome(body.cognome());
         nuovoAllievo.setEmail(body.email());
-        nuovoAllievo.setPassword(body.password());
+        nuovoAllievo.setPassword(passwordEncoder.encode(body.password()));
         nuovoAllievo.setDataDiNascita(body.dataDiNascita());
         nuovoAllievo.setImgProfilo(body.imgProfilo());
         nuovoAllievo.setRuolo(RuoloUtente.ALLIEVO);
@@ -77,7 +77,7 @@ public class AuthService {
         nuovoInsegnante.setNome(body.nome());
         nuovoInsegnante.setCognome(body.cognome());
         nuovoInsegnante.setEmail(body.email());
-        nuovoInsegnante.setPassword(body.password());
+        nuovoInsegnante.setPassword(passwordEncoder.encode(body.password()));
         nuovoInsegnante.setDataDiNascita(body.dataDiNascita());
         nuovoInsegnante.setImgProfilo(body.imgProfilo());
         nuovoInsegnante.setRuolo(RuoloUtente.INSEGNANTE);
@@ -91,6 +91,8 @@ public class AuthService {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(body.email(), body.password()));
             return (Utente) authentication.getPrincipal();
         } catch (AuthenticationException ex) {
+            System.out.println("TIPO ECCEZIONE: " + ex.getClass().getName());
+            System.out.println("MESSAGGIO: " + ex.getMessage());
             throw new UnauthorizedException("Email o password non corretti");
         }
     }

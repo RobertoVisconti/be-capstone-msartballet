@@ -3,6 +3,7 @@ package robertovisconti.be_capstone_msartballet.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -10,10 +11,25 @@ import robertovisconti.be_capstone_msartballet.payloadsDTO.errorsDTO.ErrorsDTO;
 
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class ErrorsHandler {
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorsDTO handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        List<String> listaErrori = ex.getBindingResult().getFieldErrors().stream()
+                .map(errore -> errore.getField() + ": " + errore.getDefaultMessage())
+                .collect(Collectors.toList());
+
+        ex.getBindingResult().getGlobalErrors().forEach(errore ->
+                listaErrori.add(errore.getObjectName() + ": " + errore.getDefaultMessage())
+        );
+
+        return new ErrorsDTO("Ci sono stati errori di validazione", LocalDateTime.now(), listaErrori);
+    }
 
     // 1. GESTIONE ERRORI DI VALIDAZIONE (400 Bad Request)
     @ExceptionHandler(ValidationException.class)

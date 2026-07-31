@@ -49,21 +49,20 @@ public record NewAllievoDTO(
         @Future(message = "La data di scadenza del certificato deve essere futura! ")
         LocalDate dataScadenzaCertificato,
 
-        @NotBlank(message = "Il nome del contatto di emergenza è obbligatoria!")
+        
         String contattoEmergenzaNome,
 
-        @NotBlank(message = "Il telefono del contatto di emergenza è obbligatorio!")
         @Pattern(regexp = "^\\+?[0-9]{9,15}$", message = "Numero di telefono non valido")
         String contattoEmergenzaTelefono,
 
-        @NotBlank(message = "Il codice fiscale è obbligatorio")
+
         @Pattern(
                 regexp = "^[A-Za-z]{6}[0-9]{2}[A-Za-z][0-9]{2}[A-Za-z][0-9]{3}[A-Za-z]$",
-                message = "formato codice fiscale non valido"
+                message = "Formato codice fiscale non valido"
         )
         String codiceFiscale,
 
-        @NotNull(message = "Obbligatorio indicare il consenso privacy per l'utilizzo delle foto")
+
         Boolean consensoPrivacyFoto
 
 
