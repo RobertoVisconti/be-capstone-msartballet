@@ -11,11 +11,18 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import robertovisconti.be_capstone_msartballet.services.UtenteService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private TokenFilter tokenFilter;
+
+    public SecurityConfig(TokenFilter tokenFilter) {
+        this.tokenFilter = tokenFilter;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
@@ -32,7 +39,13 @@ public class SecurityConfig {
         httpSecurity.csrf(csrf -> csrf.disable());
 
         // Vado ad eliminare il controllo di autenticazione su tutti gli end-point che fà Spring Security di default (401)
-        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/**").permitAll());
+        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/auth/**").permitAll()
+                .requestMatchers(org.springframework.http.HttpMethod.GET,
+                        "/corsi/**", "/discipline/**", "/spettacoli/**", "/media/**").permitAll()
+                .anyRequest().authenticated()
+        );
+
+        httpSecurity.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
