@@ -16,10 +16,6 @@ public record NewInsegnanteDTO(
         @Email(message = "Formato email non valido")
         String email,
 
-        @NotBlank(message = "La password è obbligatoria!")
-        @Size(min = 8, max = 100, message = "La password deve avere almeno 8 caratteri")
-        String password,
-
         @NotNull(message = "La data di nascita è obbligatoria!")
         @Past(message = "La data di nascità deve essere nel passato")
         LocalDate dataDiNascita,

@@ -44,7 +44,6 @@ public class AuthService {
         nuovoAllievo.setNome(body.nome());
         nuovoAllievo.setCognome(body.cognome());
         nuovoAllievo.setEmail(body.email());
-        nuovoAllievo.setPassword(passwordEncoder.encode(body.password()));
         nuovoAllievo.setDataDiNascita(body.dataDiNascita());
         nuovoAllievo.setImgProfilo(body.imgProfilo());
         nuovoAllievo.setRuolo(RuoloUtente.ALLIEVO);
@@ -77,7 +76,6 @@ public class AuthService {
         nuovoInsegnante.setNome(body.nome());
         nuovoInsegnante.setCognome(body.cognome());
         nuovoInsegnante.setEmail(body.email());
-        nuovoInsegnante.setPassword(passwordEncoder.encode(body.password()));
         nuovoInsegnante.setDataDiNascita(body.dataDiNascita());
         nuovoInsegnante.setImgProfilo(body.imgProfilo());
         nuovoInsegnante.setRuolo(RuoloUtente.INSEGNANTE);
