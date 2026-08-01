@@ -39,7 +39,7 @@ public class SecurityConfig {
         httpSecurity.csrf(csrf -> csrf.disable());
 
         // Vado ad eliminare il controllo di autenticazione su tutti gli end-point che fà Spring Security di default (401)
-        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/auth/**").permitAll()
+        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/auth/admin/**").hasRole("ADMIN").requestMatchers("/auth/**").permitAll()
                 .requestMatchers(org.springframework.http.HttpMethod.GET,
                         "/corsi/**", "/discipline/**", "/spettacoli/**", "/media/**").permitAll()
                 .anyRequest().authenticated()

@@ -7,18 +7,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import robertovisconti.be_capstone_msartballet.entities.Allievo;
-import robertovisconti.be_capstone_msartballet.entities.Insegnante;
-import robertovisconti.be_capstone_msartballet.entities.Utente;
+import robertovisconti.be_capstone_msartballet.entities.*;
 import robertovisconti.be_capstone_msartballet.enums.RuoloUtente;
 import robertovisconti.be_capstone_msartballet.exceptions.BadRequestException;
 import robertovisconti.be_capstone_msartballet.exceptions.UnauthorizedException;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.loginDTO.LoginDTO;
+import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.AttivazioneAccountDTO;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.NewAllievoDTO;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.NewInsegnanteDTO;
-import robertovisconti.be_capstone_msartballet.repositories.utenti.AllievoRepository;
-import robertovisconti.be_capstone_msartballet.repositories.utenti.InsegnanteRepository;
-import robertovisconti.be_capstone_msartballet.repositories.utenti.UtenteRepository;
+import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.OspiteRegistrazioneDTO;
+import robertovisconti.be_capstone_msartballet.repositories.utenti.*;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -26,13 +27,17 @@ public class AuthService {
     private UtenteRepository utenteRepository;
     private AllievoRepository allievoRepository;
     private InsegnanteRepository insegnanteRepository;
+    private OspiteRepository ospiteRepository;
+    private TokenAttivazioneRepository tokenAttivazioneRepository;
     private PasswordEncoder passwordEncoder;
     private AuthenticationManager authenticationManager;
 
-    public AuthService(UtenteRepository utenteRepository, AllievoRepository allievoRepository, InsegnanteRepository insegnanteRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+    public AuthService(UtenteRepository utenteRepository, AllievoRepository allievoRepository, InsegnanteRepository insegnanteRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, OspiteRepository ospiteRepository, TokenAttivazioneRepository tokenAttivazioneRepository) {
         this.utenteRepository = utenteRepository;
         this.allievoRepository = allievoRepository;
         this.insegnanteRepository = insegnanteRepository;
+        this.ospiteRepository = ospiteRepository;
+        this.tokenAttivazioneRepository = tokenAttivazioneRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
     }
@@ -47,6 +52,7 @@ public class AuthService {
         nuovoAllievo.setDataDiNascita(body.dataDiNascita());
         nuovoAllievo.setImgProfilo(body.imgProfilo());
         nuovoAllievo.setRuolo(RuoloUtente.ALLIEVO);
+        nuovoAllievo.setAccountAttivo(false);
 
         // campi opzionali in fase di registrazione
         nuovoAllievo.setNumeroScarpetta(body.numeroScarpetta());
@@ -65,7 +71,18 @@ public class AuthService {
         nuovoAllievo.setConsensoPrivacyFoto(body.consensoPrivacyFoto() != null ? body.consensoPrivacyFoto() : false);
         nuovoAllievo.setQuotaIscrizionePagata(false); // gestita dalla segreteria quando si iscrive a un corso
 
-        return allievoRepository.save(nuovoAllievo);
+        Allievo allievoSalvato = allievoRepository.save(nuovoAllievo);
+        generaTokenAttivazione(allievoSalvato);
+
+        return allievoSalvato;
+    }
+
+
+    public Ospite registraOspite(OspiteRegistrazioneDTO body) {
+        verificaEmailDisponibile(body.email());
+        Ospite nuovoOspite = new Ospite(body.nome(), body.cognome(), body.email(), body.dataDiNascita());
+        return ospiteRepository.save(nuovoOspite);
+
     }
 
     public Insegnante registraInsegnante(NewInsegnanteDTO body) {
@@ -80,19 +97,48 @@ public class AuthService {
         nuovoInsegnante.setImgProfilo(body.imgProfilo());
         nuovoInsegnante.setRuolo(RuoloUtente.INSEGNANTE);
         nuovoInsegnante.setBiografia(body.biografia());
+        nuovoInsegnante.setAccountAttivo(false);
 
-        return insegnanteRepository.save(nuovoInsegnante);
+        Insegnante insegnanteSalvato = insegnanteRepository.save(nuovoInsegnante);
+        generaTokenAttivazione(insegnanteSalvato);
+
+        return insegnanteSalvato;
     }
+
+    public Utente attivaAccount(AttivazioneAccountDTO body) {
+        TokenAttivazione tokenAttivazione = tokenAttivazioneRepository.findByToken(body.token()).orElseThrow(() -> new BadRequestException("Token di attivazione non valido!"));
+        if (Boolean.TRUE.equals(tokenAttivazione.getUtilizzato())) {
+            throw new BadRequestException("Questo link di attivazione è già utilizzato!");
+        }
+        if (tokenAttivazione.getDataScadenza().isBefore(LocalDateTime.now())) {
+            throw new BadRequestException("Il link di attivazione è scaduto, contatta la segreteria");
+        }
+        Utente utente = tokenAttivazione.getUtente();
+        utente.setPassword(passwordEncoder.encode(body.nuovaPassword()));
+        utente.setAccountAttivo(true);
+        utenteRepository.save(utente);
+
+        tokenAttivazione.setUtilizzato(true);
+        tokenAttivazioneRepository.save(tokenAttivazione);
+
+        return utente;
+    }
+
 
     public Utente login(LoginDTO body) {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(body.email(), body.password()));
             return (Utente) authentication.getPrincipal();
         } catch (AuthenticationException ex) {
-            System.out.println("TIPO ECCEZIONE: " + ex.getClass().getName());
-            System.out.println("MESSAGGIO: " + ex.getMessage());
             throw new UnauthorizedException("Email o password non corretti");
         }
+    }
+
+
+    private void generaTokenAttivazione(Utente utente) {
+        TokenAttivazione tokenAttivazione = new TokenAttivazione(UUID.randomUUID().toString(), LocalDateTime.now().plusDays(2), utente);
+        TokenAttivazione tokenSalvato = tokenAttivazioneRepository.save(tokenAttivazione);
+        System.out.println("Link di attivazione per " + utente.getEmail() + " token : " + tokenSalvato.getToken());
     }
 
 
@@ -101,5 +147,5 @@ public class AuthService {
             throw new BadRequestException("L'email " + email + " è già in uso");
         }
     }
-
 }
+

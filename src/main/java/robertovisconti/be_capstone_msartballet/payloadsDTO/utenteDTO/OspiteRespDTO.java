@@ -5,7 +5,7 @@ import robertovisconti.be_capstone_msartballet.enums.RuoloUtente;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public record InsegnanteRespDTO(
+public record OspiteRespDTO(
         UUID id,
         String nome,
         String cognome,
@@ -13,8 +13,6 @@ public record InsegnanteRespDTO(
         LocalDate dataDiNascita,
         String imgProfilo,
         RuoloUtente ruolo,
-        LocalDate dataRegistrazione,
-        Boolean accountAttivo,
-        String biografia
+        LocalDate dataRegistrazione
 ) {
 }

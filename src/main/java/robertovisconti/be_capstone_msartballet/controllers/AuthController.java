@@ -5,13 +5,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import robertovisconti.be_capstone_msartballet.entities.Allievo;
 import robertovisconti.be_capstone_msartballet.entities.Insegnante;
+import robertovisconti.be_capstone_msartballet.entities.Ospite;
 import robertovisconti.be_capstone_msartballet.entities.Utente;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.loginDTO.LoginDTO;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.loginDTO.LoginRespDTO;
-import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.AllievoRespDTO;
-import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.InsegnanteRespDTO;
-import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.NewAllievoDTO;
-import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.NewInsegnanteDTO;
+import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.*;
 import robertovisconti.be_capstone_msartballet.security.TokenToolkit;
 import robertovisconti.be_capstone_msartballet.services.utenti.AuthService;
 
@@ -27,18 +25,39 @@ public class AuthController {
         this.tokenToolkit = tokenToolkit;
     }
 
-    @PostMapping("/register/allievo")
+    @PostMapping("/admin/allievi")
     @ResponseStatus(HttpStatus.CREATED)
     public AllievoRespDTO registraAllievo(@RequestBody @Valid NewAllievoDTO body) {
         Allievo nuovoAllievo = authService.registraAllievo(body);
         return mappaAllievo(nuovoAllievo);
     }
 
-    @PostMapping("/register/insegnante")
+    @PostMapping("/admin/insegnanti")
     @ResponseStatus(HttpStatus.CREATED)
     public InsegnanteRespDTO registraInsegnante(@RequestBody @Valid NewInsegnanteDTO body) {
         Insegnante nuovoInsegnante = authService.registraInsegnante(body);
         return mappaInsegnante(nuovoInsegnante);
+    }
+
+    @PostMapping("/register/ospite")
+    @ResponseStatus(HttpStatus.CREATED)
+    public OspiteRespDTO registraOspite(@RequestBody @Valid OspiteRegistrazioneDTO body) {
+        Ospite nuovoOspite = authService.registraOspite(body);
+        return mappaOspite(nuovoOspite);
+    }
+
+    @PostMapping("/attiva-account")
+    public LoginRespDTO attivaAccount(@RequestBody @Valid AttivazioneAccountDTO body) {
+        Utente utente = authService.attivaAccount(body);
+        String token = tokenToolkit.tokenGenerator(utente);
+
+        return new LoginRespDTO(
+                token,
+                utente.getId(),
+                utente.getNome(),
+                utente.getCognome(),
+                utente.getRuolo()
+        );
     }
 
     @PostMapping("/login")
@@ -66,6 +85,7 @@ public class AuthController {
                 allievo.getImgProfilo(),
                 allievo.getRuolo(),
                 allievo.getDataRegistrazione(),
+                allievo.getAccountAttivo(),
                 allievo.getNumeroScarpetta(),
                 allievo.getMarcaScarpetta(),
                 allievo.getHaPunte(),
@@ -95,7 +115,23 @@ public class AuthController {
                 insegnante.getImgProfilo(),
                 insegnante.getRuolo(),
                 insegnante.getDataRegistrazione(),
+                insegnante.getAccountAttivo(),
                 insegnante.getBiografia()
         );
     }
+
+    private OspiteRespDTO mappaOspite(Ospite ospite) {
+        return new OspiteRespDTO(
+                ospite.getId(),
+                ospite.getNome(),
+                ospite.getCognome(),
+                ospite.getEmail(),
+                ospite.getDataDiNascita(),
+                ospite.getImgProfilo(),
+                ospite.getRuolo(),
+                ospite.getDataRegistrazione()
+        );
+    }
+
+
 }
