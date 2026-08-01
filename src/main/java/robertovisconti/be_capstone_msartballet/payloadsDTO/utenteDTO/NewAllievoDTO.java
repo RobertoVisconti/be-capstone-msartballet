@@ -17,10 +17,6 @@ public record NewAllievoDTO(
         @Email(message = "Formato email non valido")
         String email,
 
-        @NotBlank(message = "La password è obbligatoria!")
-        @Size(min = 8, max = 100, message = "La password deve avere almeno 8 caratteri")
-        String password,
-
         @NotNull(message = "La data di nascità è obbligatoria")
         LocalDate dataDiNascita,
 
@@ -49,7 +45,6 @@ public record NewAllievoDTO(
         @Future(message = "La data di scadenza del certificato deve essere futura! ")
         LocalDate dataScadenzaCertificato,
 
-        
         String contattoEmergenzaNome,
 
         @Pattern(regexp = "^\\+?[0-9]{9,15}$", message = "Numero di telefono non valido")

@@ -38,12 +38,14 @@ public abstract class Utente implements UserDetails {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
     @JsonIgnore
     private String password;
 
     @Column(name = "img_profilo")
     private String imgProfilo;
+
+    @Column(name = "account_attivo")
+    private Boolean accountAttivo = false;
 
     @Column(name = "ruolo_utente")
     @Enumerated(EnumType.STRING)
@@ -88,6 +90,10 @@ public abstract class Utente implements UserDetails {
 
     public void setRuolo(RuoloUtente ruolo) {
         this.ruolo = ruolo;
+    }
+
+    public void setAccountAttivo(Boolean accountAttivo) {
+        this.accountAttivo = accountAttivo;
     }
 
     // UserDetails
