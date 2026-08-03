@@ -36,9 +36,10 @@ public class CorsoController {
             @RequestParam(required = false) LivelloCorso livelloCorso,
             @RequestParam(required = false) GiornoSettimana giornoSettimana,
             @RequestParam(required = false) Double prezzoMin,
-            @RequestParam(required = false) Double prezzoMax
+            @RequestParam(required = false) Double prezzoMax,
+            @RequestParam(required = false) UUID idInsegnante
     ) {
-        return corsoService.trovaConFiltri(idDisciplina, livelloCorso, giornoSettimana, prezzoMin, prezzoMax)
+        return corsoService.trovaConFiltri(idDisciplina, livelloCorso, giornoSettimana, prezzoMin, prezzoMax, idInsegnante)
                 .stream().map(this::mappa).toList();
     }
 
@@ -71,7 +72,9 @@ public class CorsoController {
                 corso.getOra_fine(),
                 corso.getPrezzoMensile(),
                 corso.getDisciplina().getId(),
-                corso.getDisciplina().getNome()
+                corso.getDisciplina().getNome(),
+                corso.getInsegnante().getId(),
+                corso.getInsegnante().getNome() + " " + corso.getInsegnante().getCognome()
         );
     }
 }

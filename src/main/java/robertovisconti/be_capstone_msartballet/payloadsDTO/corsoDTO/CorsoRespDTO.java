@@ -16,6 +16,8 @@ public record CorsoRespDTO(
         LocalTime oraFine,
         Double prezzoMensile,
         UUID idDisciplina,
-        String nomeDisciplina
+        String nomeDisciplina,
+        UUID idInsegnante,
+        String nomeInsegnante
 ) {
 }

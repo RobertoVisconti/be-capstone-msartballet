@@ -12,13 +12,14 @@ public class CorsoSpecification {
     private CorsoSpecification() {
     }
 
-    public static Specification<Corso> filtra(UUID idDisciplina, LivelloCorso livelloCorso, GiornoSettimana giornoSettimana, Double prezzoMin, Double prezzoMax) {
+    public static Specification<Corso> filtra(UUID idDisciplina, LivelloCorso livelloCorso, GiornoSettimana giornoSettimana, Double prezzoMin, Double prezzoMax, UUID idInsegnante) {
         return Specification.allOf(
                 haIdDisciplina(idDisciplina),
                 haLivello(livelloCorso),
                 haGiorno(giornoSettimana),
                 haPrezzoMinimo(prezzoMin),
-                haPrezzoMassimo(prezzoMax)
+                haPrezzoMassimo(prezzoMax),
+                haIdInsegnante(idInsegnante)
         );
     }
 
@@ -40,5 +41,9 @@ public class CorsoSpecification {
 
     private static Specification<Corso> haPrezzoMassimo(Double prezzoMax) {
         return (root, query, cb) -> prezzoMax == null ? null : cb.lessThanOrEqualTo(root.get("prezzoMensile"), prezzoMax);
+    }
+
+    private static Specification<Corso> haIdInsegnante(UUID idInsegnante) {
+        return (root, query, cb) -> idInsegnante == null ? null : cb.equal(root.get("insegnante").get("id"), idInsegnante);
     }
 }

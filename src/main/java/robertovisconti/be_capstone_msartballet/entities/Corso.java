@@ -46,6 +46,11 @@ public class Corso {
     @JoinColumn(name = "id_disciplina", nullable = false)
     private Disciplina disciplina;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_insegnante", nullable = false)
+    private Insegnante insegnante;
+
+
     public Corso(String titolo, String descrizione, LivelloCorso livelloCorso, GiornoSettimana giornoSettimana, LocalTime oraInizio, LocalTime ora_fine, Double prezzoMensile) {
         this.titolo = titolo;
         this.descrizione = descrizione;
@@ -86,5 +91,9 @@ public class Corso {
 
     public void setDisciplina(Disciplina disciplina) {
         this.disciplina = disciplina;
+    }
+
+    public void setInsegnante(Insegnante insegnante) {
+        this.insegnante = insegnante;
     }
 }

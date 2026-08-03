@@ -37,7 +37,10 @@ public record NewCorsoDTO(
         Double prezzoMensile,
 
         @NotNull(message = "La disciplina è obbligatoria!")
-        UUID idDisciplina
+        UUID idDisciplina,
+
+        @NotNull(message = "L'insegnante è obbligatorio!")
+        UUID idInsegnante
 
 ) {
 }
