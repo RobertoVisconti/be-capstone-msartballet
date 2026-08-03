@@ -51,4 +51,16 @@ public class Transazione {
     public void setMetodoPagamento(String metodoPagamento) {
         this.metodoPagamento = metodoPagamento;
     }
+
+    public void setUtente(Utente utente) {
+        this.utente = utente;
+    }
+
+    public void setProdotto(Prodotto prodotto) {
+        this.prodotto = prodotto;
+    }
+
+    public void setCorso(Corso corso) {
+        this.corso = corso;
+    }
 }

@@ -45,6 +45,9 @@ public class SecurityConfig {
                 .requestMatchers("/discipline/**", "/sale/**", "/prodotti/**", "/media/**", "/spettacoli/**", "/corsi/**", "/lezioni/**").hasRole("ADMIN")
                 .requestMatchers(org.springframework.http.HttpMethod.POST, "/iscrizioni").hasAnyRole("ALLIEVO", "ADMIN")
                 .requestMatchers("/iscrizioni/**").hasRole("ADMIN")
+                .requestMatchers(org.springframework.http.HttpMethod.POST, "/prenotazioni").hasAnyRole("ALLIEVO", "OSPITE", "ADMIN")
+                .requestMatchers("/prenotazioni/**").hasRole("ADMIN")
+                .requestMatchers("/transazioni/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
         );
 
