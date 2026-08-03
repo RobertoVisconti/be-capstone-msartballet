@@ -12,7 +12,7 @@ import java.util.UUID;
 @Service
 public class SpettacoloService {
 
-    private SpettacoloRepository spettacoloRepository;
+    private final SpettacoloRepository spettacoloRepository;
 
     public SpettacoloService(SpettacoloRepository spettacoloRepository) {
         this.spettacoloRepository = spettacoloRepository;

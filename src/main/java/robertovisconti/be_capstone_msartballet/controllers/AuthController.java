@@ -2,6 +2,7 @@ package robertovisconti.be_capstone_msartballet.controllers;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import robertovisconti.be_capstone_msartballet.entities.Allievo;
 import robertovisconti.be_capstone_msartballet.entities.Insegnante;
@@ -17,8 +18,8 @@ import robertovisconti.be_capstone_msartballet.services.utenti.AuthService;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private AuthService authService;
-    private TokenToolkit tokenToolkit;
+    private final AuthService authService;
+    private final TokenToolkit tokenToolkit;
 
     public AuthController(AuthService authService, TokenToolkit tokenToolkit) {
         this.authService = authService;
@@ -26,6 +27,7 @@ public class AuthController {
     }
 
     @PostMapping("/admin/allievi")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public AllievoRespDTO registraAllievo(@RequestBody @Valid NewAllievoDTO body) {
         Allievo nuovoAllievo = authService.registraAllievo(body);
@@ -33,6 +35,7 @@ public class AuthController {
     }
 
     @PostMapping("/admin/insegnanti")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public InsegnanteRespDTO registraInsegnante(@RequestBody @Valid NewInsegnanteDTO body) {
         Insegnante nuovoInsegnante = authService.registraInsegnante(body);

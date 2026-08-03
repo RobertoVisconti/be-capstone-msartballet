@@ -2,6 +2,7 @@ package robertovisconti.be_capstone_msartballet.controllers.store;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import robertovisconti.be_capstone_msartballet.entities.Prodotto;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.storeDTO.NewProdottoDTO;
@@ -14,13 +15,14 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/prodotti")
 public class ProdottoController {
-    private ProdottoService prodottoService;
+    private final ProdottoService prodottoService;
 
     public ProdottoController(ProdottoService prodottoService) {
         this.prodottoService = prodottoService;
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public ProdottoRespDTO creaProdotto(@RequestBody @Valid NewProdottoDTO body) {
         return mappa(prodottoService.creaProdotto(body));
@@ -37,11 +39,13 @@ public class ProdottoController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ProdottoRespDTO modificaProdotto(@PathVariable UUID id, @RequestBody @Valid NewProdottoDTO body) {
         return mappa(prodottoService.modificaProdotto(id, body));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminaProdotto(@PathVariable UUID id) {
         prodottoService.eliminaProdotto(id);

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -16,6 +17,7 @@ import robertovisconti.be_capstone_msartballet.services.UtenteService;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private TokenFilter tokenFilter;
@@ -39,17 +41,12 @@ public class SecurityConfig {
         httpSecurity.csrf(csrf -> csrf.disable());
 
         // Vado ad eliminare il controllo di autenticazione su tutti gli end-point che fà Spring Security di default (401)
-        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/auth/admin/**").hasRole("ADMIN").requestMatchers("/auth/**").permitAll()
+        httpSecurity.authorizeHttpRequests(request -> request
+                .requestMatchers("/auth/admin/**").authenticated()
+                .requestMatchers("/auth/**").permitAll()
                 .requestMatchers(org.springframework.http.HttpMethod.GET,
                         "/corsi/**", "/discipline/**", "/spettacoli/**", "/media/**", "/sale/**", "/prodotti/**", "/lezioni/**").permitAll()
-                .requestMatchers("/discipline/**", "/sale/**", "/prodotti/**", "/media/**", "/spettacoli/**", "/corsi/**", "/lezioni/**").hasRole("ADMIN")
-                .requestMatchers(org.springframework.http.HttpMethod.POST, "/iscrizioni").hasAnyRole("ALLIEVO", "ADMIN")
-                .requestMatchers("/iscrizioni/**").hasRole("ADMIN")
-                .requestMatchers(org.springframework.http.HttpMethod.POST, "/prenotazioni").hasAnyRole("ALLIEVO", "OSPITE", "ADMIN")
-                .requestMatchers("/prenotazioni/**").hasRole("ADMIN")
-                .requestMatchers("/transazioni/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
-        );
+                .anyRequest().authenticated());
 
         httpSecurity.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
 

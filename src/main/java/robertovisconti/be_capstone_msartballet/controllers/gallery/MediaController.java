@@ -2,6 +2,7 @@ package robertovisconti.be_capstone_msartballet.controllers.gallery;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import robertovisconti.be_capstone_msartballet.entities.Media;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.galleryDTO.MediaRespDTO;
@@ -14,13 +15,14 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/media")
 public class MediaController {
-    private MediaService mediaService;
+    private final MediaService mediaService;
 
     public MediaController(MediaService mediaService) {
         this.mediaService = mediaService;
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public MediaRespDTO creaMedia(@RequestBody @Valid NewMediaDTO body) {
         return mappa(mediaService.creaMedia(body));
@@ -37,11 +39,13 @@ public class MediaController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public MediaRespDTO modificaMedia(@PathVariable UUID id, @RequestBody @Valid NewMediaDTO body) {
         return mappa(mediaService.modificaMedia(id, body));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminaMedia(@PathVariable UUID id) {
         mediaService.eliminaMedia(id);

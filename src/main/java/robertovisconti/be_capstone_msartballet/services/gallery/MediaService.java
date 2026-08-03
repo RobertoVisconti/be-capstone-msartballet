@@ -14,8 +14,8 @@ import java.util.UUID;
 @Service
 public class MediaService {
 
-    private MediaRepository mediaRepository;
-    private SpettacoloRepository spettacoloRepository;
+    private final MediaRepository mediaRepository;
+    private final SpettacoloRepository spettacoloRepository;
 
     public MediaService(MediaRepository mediaRepository, SpettacoloRepository spettacoloRepository) {
         this.mediaRepository = mediaRepository;

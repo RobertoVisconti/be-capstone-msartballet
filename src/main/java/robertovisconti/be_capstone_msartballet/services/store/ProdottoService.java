@@ -12,7 +12,8 @@ import java.util.UUID;
 
 @Service
 public class ProdottoService {
-    private ProdottoRepository prodottoRepository;
+    
+    private final ProdottoRepository prodottoRepository;
 
     public ProdottoService(ProdottoRepository prodottoRepository) {
         this.prodottoRepository = prodottoRepository;

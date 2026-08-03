@@ -26,15 +26,15 @@ import java.util.UUID;
 @Service
 public class AuthService {
 
-    private UtenteRepository utenteRepository;
-    private AllievoRepository allievoRepository;
-    private InsegnanteRepository insegnanteRepository;
-    private OspiteRepository ospiteRepository;
-    private TokenAttivazioneRepository tokenAttivazioneRepository;
-    private PasswordEncoder passwordEncoder;
-    private AuthenticationManager authenticationManager;
-    private EmailSender emailSender;
-    private String frontendUrl;
+    private final UtenteRepository utenteRepository;
+    private final AllievoRepository allievoRepository;
+    private final InsegnanteRepository insegnanteRepository;
+    private final OspiteRepository ospiteRepository;
+    private final TokenAttivazioneRepository tokenAttivazioneRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final EmailSender emailSender;
+    private final String frontendUrl;
 
     public AuthService(UtenteRepository utenteRepository, AllievoRepository allievoRepository, InsegnanteRepository insegnanteRepository, PasswordEncoder passwordEncoder,
                        AuthenticationManager authenticationManager, OspiteRepository ospiteRepository, TokenAttivazioneRepository tokenAttivazioneRepository,
@@ -153,7 +153,7 @@ public class AuthService {
                 + "Il tuo account è stato creato. Per attivarlo e impostare la tua password, apri questo link:\n"
                 + linkAttivazione + "\n\n"
                 + "Il link scade tra 2 giorni.";
-        
+
         emailSender.inviaEmail(utente.getEmail(), "Attiva il tuo account", testo);
     }
 

@@ -2,6 +2,7 @@ package robertovisconti.be_capstone_msartballet.controllers.lezione;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import robertovisconti.be_capstone_msartballet.entities.Iscrizione;
@@ -18,19 +19,21 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/iscrizioni")
 public class IscrizioneController {
-    private IscrizioneService iscrizioneService;
+    private final IscrizioneService iscrizioneService;
 
     public IscrizioneController(IscrizioneService iscrizioneService) {
         this.iscrizioneService = iscrizioneService;
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'ALLIEVO')")
     @ResponseStatus(HttpStatus.CREATED)
     public IscrizioneRespDTO creaIscrizione(@RequestBody @Valid NewIscrizioneDTO body, @AuthenticationPrincipal Utente richiedente) {
         return mappa(iscrizioneService.creaIscrizione(body, richiedente));
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public List<IscrizioneRespDTO> trovaConFiltri(
             @RequestParam(required = false) UUID idAllievo,
             @RequestParam(required = false) UUID idCorso,
@@ -40,16 +43,19 @@ public class IscrizioneController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public IscrizioneRespDTO trovaPerId(@PathVariable UUID id) {
         return mappa(iscrizioneService.trovaPerId(id));
     }
 
     @PatchMapping("/{id}/stato")
+    @PreAuthorize("hasRole('ADMIN')")
     public IscrizioneRespDTO cambiaStato(@PathVariable UUID id, @RequestBody @Valid CambiaStatoIscrizioneDTO body) {
         return mappa(iscrizioneService.cambiaStato(id, body));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminaIscrizione(@PathVariable UUID id) {
         iscrizioneService.eliminaIscrizione(id);

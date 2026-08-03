@@ -19,10 +19,10 @@ import java.util.UUID;
 
 @Service
 public class TransazioneService {
-    private TransazioneRepository transazioneRepository;
-    private UtenteRepository utenteRepository;
-    private ProdottoRepository prodottoRepository;
-    private CorsoRepository corsoRepository;
+    private final TransazioneRepository transazioneRepository;
+    private final UtenteRepository utenteRepository;
+    private final ProdottoRepository prodottoRepository;
+    private final CorsoRepository corsoRepository;
 
     public TransazioneService(TransazioneRepository transazioneRepository, UtenteRepository utenteRepository, ProdottoRepository prodottoRepository, CorsoRepository corsoRepository) {
         this.transazioneRepository = transazioneRepository;

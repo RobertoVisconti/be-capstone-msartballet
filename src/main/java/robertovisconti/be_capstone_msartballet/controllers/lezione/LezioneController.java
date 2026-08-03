@@ -3,6 +3,7 @@ package robertovisconti.be_capstone_msartballet.controllers.lezione;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import robertovisconti.be_capstone_msartballet.entities.Lezione;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.lezioneDTO.LezioneRespDTO;
@@ -16,13 +17,15 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/lezioni")
 public class LezioneController {
-    private LezioneService lezioneService;
+
+    private final LezioneService lezioneService;
 
     public LezioneController(LezioneService lezioneService) {
         this.lezioneService = lezioneService;
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public LezioneRespDTO creaLezione(@RequestBody @Valid NewLezioneDTO body) {
         return mappa(lezioneService.creaLezione(body));
@@ -44,11 +47,13 @@ public class LezioneController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public LezioneRespDTO modificaLezione(@PathVariable UUID id, @RequestBody @Valid NewLezioneDTO body) {
         return mappa(lezioneService.modificaLezione(id, body));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminaLezione(@PathVariable UUID id) {
         lezioneService.eliminaLezione(id);

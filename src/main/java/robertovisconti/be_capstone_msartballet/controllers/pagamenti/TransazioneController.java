@@ -3,6 +3,7 @@ package robertovisconti.be_capstone_msartballet.controllers.pagamenti;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import robertovisconti.be_capstone_msartballet.entities.Transazione;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.pagamentoDTO.NewTransazioneDTO;
@@ -16,19 +17,22 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/transazioni")
 public class TransazioneController {
-    private TransazioneService transazioneService;
+
+    private final TransazioneService transazioneService;
 
     public TransazioneController(TransazioneService transazioneService) {
         this.transazioneService = transazioneService;
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public TransazioneRespDTO creaTransazione(@RequestBody @Valid NewTransazioneDTO body) {
         return mappa(transazioneService.creaTransazione(body));
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public List<TransazioneRespDTO> trovaConFiltri(
             @RequestParam(required = false) UUID idUtente,
             @RequestParam(required = false) UUID idProdotto,
@@ -40,11 +44,13 @@ public class TransazioneController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public TransazioneRespDTO trovaPerId(@PathVariable UUID id) {
         return mappa(transazioneService.trovaPerId(id));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminaTransazione(@PathVariable UUID id) {
         transazioneService.eliminaTransazione(id);

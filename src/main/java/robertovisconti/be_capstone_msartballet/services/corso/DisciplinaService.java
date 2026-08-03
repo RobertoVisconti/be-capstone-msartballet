@@ -12,7 +12,7 @@ import java.util.UUID;
 @Service
 public class DisciplinaService {
 
-    private DisciplinaRepository disciplinaRepository;
+    private final DisciplinaRepository disciplinaRepository;
 
     public DisciplinaService(DisciplinaRepository disciplinaRepository) {
         this.disciplinaRepository = disciplinaRepository;

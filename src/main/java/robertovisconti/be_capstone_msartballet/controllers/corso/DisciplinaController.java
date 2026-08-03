@@ -2,6 +2,7 @@ package robertovisconti.be_capstone_msartballet.controllers.corso;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import robertovisconti.be_capstone_msartballet.entities.Disciplina;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.corsoDTO.DisciplinaRespDTO;
@@ -14,13 +15,15 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/discipline")
 public class DisciplinaController {
-    private DisciplinaService disciplinaService;
+
+    private final DisciplinaService disciplinaService;
 
     public DisciplinaController(DisciplinaService disciplinaService) {
         this.disciplinaService = disciplinaService;
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public DisciplinaRespDTO creaDisciplina(@RequestBody @Valid NewDisciplinaDTO body) {
         Disciplina nuovaDisciplina = disciplinaService.creaDisciplina(body);
@@ -40,12 +43,14 @@ public class DisciplinaController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public DisciplinaRespDTO modificaDisciplina(@PathVariable UUID id, @RequestBody @Valid NewDisciplinaDTO body) {
         Disciplina disciplinaModificata = disciplinaService.modificaDisciplina(id, body);
         return mappaDisciplina(disciplinaModificata);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminaDisciplina(@PathVariable UUID id) {
         disciplinaService.eliminaDisciplina(id);
