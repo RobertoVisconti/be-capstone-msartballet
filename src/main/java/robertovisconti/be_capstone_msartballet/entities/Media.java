@@ -48,4 +48,8 @@ public class Media {
     public void setTitolo(String titolo) {
         this.titolo = titolo;
     }
+
+    public void setSpettacolo(Spettacolo spettacolo) {
+        this.spettacolo = spettacolo;
+    }
 }
