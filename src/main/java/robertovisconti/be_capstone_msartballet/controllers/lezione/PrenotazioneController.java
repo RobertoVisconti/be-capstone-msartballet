@@ -13,7 +13,10 @@ import robertovisconti.be_capstone_msartballet.payloadsDTO.lezioneDTO.NewPrenota
 import robertovisconti.be_capstone_msartballet.payloadsDTO.lezioneDTO.PrenotazioneRespDTO;
 import robertovisconti.be_capstone_msartballet.services.lezione.PrenotazioneService;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+
 import java.util.UUID;
 
 @RestController
@@ -34,12 +37,13 @@ public class PrenotazioneController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public List<PrenotazioneRespDTO> trovaConFiltri(
+    public Page<PrenotazioneRespDTO> trovaConFiltri(
             @RequestParam(required = false) UUID idUtente,
             @RequestParam(required = false) UUID idLezione,
-            @RequestParam(required = false) StatoPrenotazione stato
+            @RequestParam(required = false) StatoPrenotazione stato,
+            @PageableDefault(size = 20) Pageable pageable
     ) {
-        return prenotazioneService.trovaConFiltri(idUtente, idLezione, stato).stream().map(this::mappa).toList();
+        return prenotazioneService.trovaConFiltri(idUtente, idLezione, stato, pageable).map(this::mappa);
     }
 
     @GetMapping("/{id}")

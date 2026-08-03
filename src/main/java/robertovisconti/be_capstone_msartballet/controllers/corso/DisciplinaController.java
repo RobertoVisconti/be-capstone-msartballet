@@ -9,7 +9,10 @@ import robertovisconti.be_capstone_msartballet.payloadsDTO.corsoDTO.DisciplinaRe
 import robertovisconti.be_capstone_msartballet.payloadsDTO.corsoDTO.NewDisciplinaDTO;
 import robertovisconti.be_capstone_msartballet.services.corso.DisciplinaService;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+
 import java.util.UUID;
 
 @RestController
@@ -31,10 +34,8 @@ public class DisciplinaController {
     }
 
     @GetMapping
-    public List<DisciplinaRespDTO> trovaTutte() {
-        return disciplinaService.trovaTutte().stream()
-                .map(this::mappaDisciplina)
-                .toList();
+    public Page<DisciplinaRespDTO> trovaTutte(@PageableDefault(size = 20) Pageable pageable) {
+        return disciplinaService.trovaTutte(pageable).map(this::mappaDisciplina);
     }
 
     @GetMapping("/{id}")

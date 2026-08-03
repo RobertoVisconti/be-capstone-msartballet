@@ -6,7 +6,9 @@ import robertovisconti.be_capstone_msartballet.exceptions.NotFoundException;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.corsoDTO.NewDisciplinaDTO;
 import robertovisconti.be_capstone_msartballet.repositories.corsi.DisciplinaRepository;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.UUID;
 
 @Service
@@ -23,8 +25,8 @@ public class DisciplinaService {
         return disciplinaRepository.save(nuovaDisciplina);
     }
 
-    public List<Disciplina> trovaTutte() {
-        return disciplinaRepository.findAll();
+    public Page<Disciplina> trovaTutte(Pageable pageable) {
+        return disciplinaRepository.findAll(pageable);
     }
 
     public Disciplina trovaPerId(UUID id) {

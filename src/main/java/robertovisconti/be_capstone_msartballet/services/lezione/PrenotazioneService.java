@@ -13,7 +13,9 @@ import robertovisconti.be_capstone_msartballet.repositories.lezioni.Prenotazione
 import robertovisconti.be_capstone_msartballet.repositories.utenti.UtenteRepository;
 import robertovisconti.be_capstone_msartballet.specification.PrenotazioneSpecification;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.UUID;
 
 public class PrenotazioneService {
@@ -38,8 +40,8 @@ public class PrenotazioneService {
         return prenotazioneRepository.save(nuovaPrenotazione);
     }
 
-    public List<Prenotazione> trovaConFiltri(UUID idUtente, UUID idLezione, StatoPrenotazione stato) {
-        return prenotazioneRepository.findAll(PrenotazioneSpecification.filtra(idUtente, idLezione, stato));
+    public Page<Prenotazione> trovaConFiltri(UUID idUtente, UUID idLezione, StatoPrenotazione stato, Pageable pageable) {
+        return prenotazioneRepository.findAll(PrenotazioneSpecification.filtra(idUtente, idLezione, stato), pageable);
     }
 
     public Prenotazione trovaPerId(UUID id) {

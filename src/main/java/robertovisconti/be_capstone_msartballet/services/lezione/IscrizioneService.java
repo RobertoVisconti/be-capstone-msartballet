@@ -16,7 +16,9 @@ import robertovisconti.be_capstone_msartballet.repositories.lezioni.IscrizioneRe
 import robertovisconti.be_capstone_msartballet.repositories.utenti.AllievoRepository;
 import robertovisconti.be_capstone_msartballet.specification.IscrizioneSpecification;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.UUID;
 
 @Service
@@ -43,8 +45,8 @@ public class IscrizioneService {
         return iscrizioneRepository.save(nuovaIscrizione);
     }
 
-    public List<Iscrizione> trovaConFiltri(UUID idAllievo, UUID idCorso, StatoIscrizione stato) {
-        return iscrizioneRepository.findAll(IscrizioneSpecification.filtra(idAllievo, idCorso, stato));
+    public Page<Iscrizione> trovaConFiltri(UUID idAllievo, UUID idCorso, StatoIscrizione stato, Pageable pageable) {
+        return iscrizioneRepository.findAll(IscrizioneSpecification.filtra(idAllievo, idCorso, stato), pageable);
     }
 
     public Iscrizione trovaPerId(UUID id) {

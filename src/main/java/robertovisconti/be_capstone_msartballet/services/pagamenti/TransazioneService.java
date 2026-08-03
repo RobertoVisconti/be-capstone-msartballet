@@ -13,8 +13,10 @@ import robertovisconti.be_capstone_msartballet.repositories.store.ProdottoReposi
 import robertovisconti.be_capstone_msartballet.repositories.utenti.UtenteRepository;
 import robertovisconti.be_capstone_msartballet.specification.TransazioneSpecification;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -42,8 +44,8 @@ public class TransazioneService {
         return transazioneRepository.save(nuovaTransazione);
     }
 
-    public List<Transazione> trovaConFiltri(UUID idUtente, UUID idProdotto, UUID idCorso, LocalDateTime dal, LocalDateTime al) {
-        return transazioneRepository.findAll(TransazioneSpecification.filtra(idUtente, idProdotto, idCorso, dal, al));
+    public Page<Transazione> trovaConFiltri(UUID idUtente, UUID idProdotto, UUID idCorso, LocalDateTime dal, LocalDateTime al, Pageable pageable) {
+        return transazioneRepository.findAll(TransazioneSpecification.filtra(idUtente, idProdotto, idCorso, dal, al), pageable);
     }
 
     public Transazione trovaPerId(UUID id) {

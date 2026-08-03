@@ -9,7 +9,10 @@ import robertovisconti.be_capstone_msartballet.payloadsDTO.galleryDTO.Spettacolo
 import robertovisconti.be_capstone_msartballet.payloadsDTO.galleryDTO.SpettacoloRespDTO;
 import robertovisconti.be_capstone_msartballet.services.gallery.SpettacoloService;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+
 import java.util.UUID;
 
 @RestController
@@ -29,8 +32,8 @@ public class SpettacoloController {
     }
 
     @GetMapping
-    public List<SpettacoloRespDTO> trovaTutti() {
-        return spettacoloService.trovaTutti().stream().map(this::mappa).toList();
+    public Page<SpettacoloRespDTO> trovaTutti(@PageableDefault(size = 20) Pageable pageable) {
+        return spettacoloService.trovaTutti(pageable).map(this::mappa);
     }
 
     @GetMapping("/{id}")

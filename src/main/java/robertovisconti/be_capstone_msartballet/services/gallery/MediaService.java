@@ -11,7 +11,9 @@ import robertovisconti.be_capstone_msartballet.repositories.gallery.MediaReposit
 import robertovisconti.be_capstone_msartballet.repositories.gallery.SpettacoloRepository;
 import robertovisconti.be_capstone_msartballet.tools.CloudinaryUploaderService;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.UUID;
 
 @Service
@@ -42,8 +44,8 @@ public class MediaService {
         return mediaRepository.save(nuovoMedia);
     }
 
-    public List<Media> trovaTutti() {
-        return mediaRepository.findAll();
+    public Page<Media> trovaTutti(Pageable pageable) {
+        return mediaRepository.findAll(pageable);
     }
 
     public Media trovaPerId(UUID id) {

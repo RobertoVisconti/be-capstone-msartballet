@@ -10,8 +10,11 @@ import robertovisconti.be_capstone_msartballet.payloadsDTO.pagamentoDTO.NewTrans
 import robertovisconti.be_capstone_msartballet.payloadsDTO.pagamentoDTO.TransazioneRespDTO;
 import robertovisconti.be_capstone_msartballet.services.pagamenti.TransazioneService;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -33,14 +36,15 @@ public class TransazioneController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public List<TransazioneRespDTO> trovaConFiltri(
+    public Page<TransazioneRespDTO> trovaConFiltri(
             @RequestParam(required = false) UUID idUtente,
             @RequestParam(required = false) UUID idProdotto,
             @RequestParam(required = false) UUID idCorso,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dal,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime al
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime al,
+            @PageableDefault(size = 20) Pageable pageable
     ) {
-        return transazioneService.trovaConFiltri(idUtente, idProdotto, idCorso, dal, al).stream().map(this::mappa).toList();
+        return transazioneService.trovaConFiltri(idUtente, idProdotto, idCorso, dal, al, pageable).map(this::mappa);
     }
 
     @GetMapping("/{id}")

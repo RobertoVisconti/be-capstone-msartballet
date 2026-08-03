@@ -13,7 +13,10 @@ import robertovisconti.be_capstone_msartballet.payloadsDTO.galleryDTO.NewMediaDT
 import robertovisconti.be_capstone_msartballet.services.gallery.MediaService;
 import robertovisconti.be_capstone_msartballet.tools.CloudinaryUploaderService;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+
 import java.util.UUID;
 
 @RestController
@@ -50,8 +53,8 @@ public class MediaController {
 
 
     @GetMapping
-    public List<MediaRespDTO> trovaTutti() {
-        return mediaService.trovaTutti().stream().map(this::mappa).toList();
+    public Page<MediaRespDTO> trovaTutti(@PageableDefault(size = 20) Pageable pageable) {
+        return mediaService.trovaTutti(pageable).map(this::mappa);
     }
 
     @GetMapping("/{id}")

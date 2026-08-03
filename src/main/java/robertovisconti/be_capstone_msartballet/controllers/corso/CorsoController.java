@@ -11,7 +11,10 @@ import robertovisconti.be_capstone_msartballet.payloadsDTO.corsoDTO.CorsoRespDTO
 import robertovisconti.be_capstone_msartballet.payloadsDTO.corsoDTO.NewCorsoDTO;
 import robertovisconti.be_capstone_msartballet.services.corso.CorsoService;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+
 import java.util.UUID;
 
 @RestController
@@ -31,16 +34,17 @@ public class CorsoController {
     }
 
     @GetMapping
-    public List<CorsoRespDTO> trovaConFiltri(
+    public Page<CorsoRespDTO> trovaConFiltri(
             @RequestParam(required = false) UUID idDisciplina,
             @RequestParam(required = false) LivelloCorso livelloCorso,
             @RequestParam(required = false) GiornoSettimana giornoSettimana,
             @RequestParam(required = false) Double prezzoMin,
             @RequestParam(required = false) Double prezzoMax,
-            @RequestParam(required = false) UUID idInsegnante
+            @RequestParam(required = false) UUID idInsegnante,
+            @PageableDefault(size = 20) Pageable pageable
     ) {
-        return corsoService.trovaConFiltri(idDisciplina, livelloCorso, giornoSettimana, prezzoMin, prezzoMax, idInsegnante)
-                .stream().map(this::mappa).toList();
+        return corsoService.trovaConFiltri(idDisciplina, livelloCorso, giornoSettimana, prezzoMin, prezzoMax, idInsegnante, pageable)
+                .map(this::mappa);
     }
 
     @GetMapping("/{id}")

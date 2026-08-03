@@ -8,7 +8,9 @@ import robertovisconti.be_capstone_msartballet.payloadsDTO.salaDTO.SalaDTO;
 import robertovisconti.be_capstone_msartballet.repositories.sale.SalaRepository;
 import robertovisconti.be_capstone_msartballet.tools.CloudinaryUploaderService;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.UUID;
 
 @Service
@@ -27,8 +29,8 @@ public class SalaService {
         return salaRepository.save(nuovaSala);
     }
 
-    public List<Sala> trovaTutte() {
-        return salaRepository.findAll();
+    public Page<Sala> trovaTutte(Pageable pageable) {
+        return salaRepository.findAll(pageable);
     }
 
     public Sala trovaPerId(UUID id) {

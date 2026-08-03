@@ -9,7 +9,9 @@ import robertovisconti.be_capstone_msartballet.payloadsDTO.storeDTO.NewProdottoD
 import robertovisconti.be_capstone_msartballet.repositories.store.ProdottoRepository;
 import robertovisconti.be_capstone_msartballet.tools.CloudinaryUploaderService;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.UUID;
 
 @Service
@@ -35,8 +37,8 @@ public class ProdottoService {
         return prodottoRepository.save(prodotto);
     }
 
-    public List<Prodotto> trovaTutti() {
-        return prodottoRepository.findAll();
+    public Page<Prodotto> trovaTutti(Pageable pageable) {
+        return prodottoRepository.findAll(pageable);
     }
 
     public Prodotto trovaPerId(UUID id) {

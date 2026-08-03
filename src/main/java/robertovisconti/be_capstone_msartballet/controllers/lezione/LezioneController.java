@@ -10,8 +10,11 @@ import robertovisconti.be_capstone_msartballet.payloadsDTO.lezioneDTO.LezioneRes
 import robertovisconti.be_capstone_msartballet.payloadsDTO.lezioneDTO.NewLezioneDTO;
 import robertovisconti.be_capstone_msartballet.services.lezione.LezioneService;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -32,13 +35,14 @@ public class LezioneController {
     }
 
     @GetMapping
-    public List<LezioneRespDTO> trovaConFiltri(
+    public Page<LezioneRespDTO> trovaConFiltri(
             @RequestParam(required = false) UUID idCorso,
             @RequestParam(required = false) UUID idSala,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dal,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime al
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime al,
+            @PageableDefault(size = 20) Pageable pageable
     ) {
-        return lezioneService.trovaConFiltri(idCorso, idSala, dal, al).stream().map(this::mappa).toList();
+        return lezioneService.trovaConFiltri(idCorso, idSala, dal, al, pageable).map(this::mappa);
     }
 
     @GetMapping("/{id}")

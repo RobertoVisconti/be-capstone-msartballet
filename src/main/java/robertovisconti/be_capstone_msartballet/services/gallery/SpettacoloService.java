@@ -6,7 +6,9 @@ import robertovisconti.be_capstone_msartballet.exceptions.NotFoundException;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.galleryDTO.SpettacoloDTO;
 import robertovisconti.be_capstone_msartballet.repositories.gallery.SpettacoloRepository;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.UUID;
 
 @Service
@@ -23,8 +25,8 @@ public class SpettacoloService {
         return spettacoloRepository.save(nuovoSpettacolo);
     }
 
-    public List<Spettacolo> trovaTutti() {
-        return spettacoloRepository.findAll();
+    public Page<Spettacolo> trovaTutti(Pageable pageable) {
+        return spettacoloRepository.findAll(pageable);
     }
 
     public Spettacolo trovaPerId(UUID id) {

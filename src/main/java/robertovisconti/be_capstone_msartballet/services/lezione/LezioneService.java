@@ -11,8 +11,10 @@ import robertovisconti.be_capstone_msartballet.repositories.lezioni.LezioneRepos
 import robertovisconti.be_capstone_msartballet.repositories.sale.SalaRepository;
 import robertovisconti.be_capstone_msartballet.specification.LezioneSpecification;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -37,8 +39,8 @@ public class LezioneService {
         return lezioneRepository.save(nuovaLezione);
     }
 
-    public List<Lezione> trovaConFiltri(UUID idCorso, UUID idSala, LocalDateTime dal, LocalDateTime al) {
-        return lezioneRepository.findAll(LezioneSpecification.filtra(idCorso, idSala, dal, al));
+    public Page<Lezione> trovaConFiltri(UUID idCorso, UUID idSala, LocalDateTime dal, LocalDateTime al, Pageable pageable) {
+        return lezioneRepository.findAll(LezioneSpecification.filtra(idCorso, idSala, dal, al), pageable);
     }
 
     public Lezione trovaPerId(UUID id) {

@@ -13,7 +13,9 @@ import robertovisconti.be_capstone_msartballet.repositories.corsi.DisciplinaRepo
 import robertovisconti.be_capstone_msartballet.repositories.utenti.InsegnanteRepository;
 import robertovisconti.be_capstone_msartballet.specification.CorsoSpecification;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.UUID;
 
 @Service
@@ -42,8 +44,8 @@ public class CorsoService {
         return corsoRepository.save(nuovoCorso);
     }
 
-    public List<Corso> trovaConFiltri(UUID idDisciplina, LivelloCorso livelloCorso, GiornoSettimana giornoSettimana, Double prezzoMin, Double prezzoMax, UUID idInsegnante) {
-        return corsoRepository.findAll(CorsoSpecification.filtra(idDisciplina, livelloCorso, giornoSettimana, prezzoMin, prezzoMax, idInsegnante));
+    public Page<Corso> trovaConFiltri(UUID idDisciplina, LivelloCorso livelloCorso, GiornoSettimana giornoSettimana, Double prezzoMin, Double prezzoMax, UUID idInsegnante, Pageable pageable) {
+        return corsoRepository.findAll(CorsoSpecification.filtra(idDisciplina, livelloCorso, giornoSettimana, prezzoMin, prezzoMax, idInsegnante), pageable);
     }
 
     public Corso trovaPerId(UUID id) {
