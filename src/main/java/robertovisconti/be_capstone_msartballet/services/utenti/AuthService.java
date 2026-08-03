@@ -1,6 +1,7 @@
 package robertovisconti.be_capstone_msartballet.services.utenti;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,7 @@ import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.NewAllievoD
 import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.NewInsegnanteDTO;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.OspiteRegistrazioneDTO;
 import robertovisconti.be_capstone_msartballet.repositories.utenti.*;
+import robertovisconti.be_capstone_msartballet.tools.EmailSender;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -31,8 +33,12 @@ public class AuthService {
     private TokenAttivazioneRepository tokenAttivazioneRepository;
     private PasswordEncoder passwordEncoder;
     private AuthenticationManager authenticationManager;
+    private EmailSender emailSender;
+    private String frontendUrl;
 
-    public AuthService(UtenteRepository utenteRepository, AllievoRepository allievoRepository, InsegnanteRepository insegnanteRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, OspiteRepository ospiteRepository, TokenAttivazioneRepository tokenAttivazioneRepository) {
+    public AuthService(UtenteRepository utenteRepository, AllievoRepository allievoRepository, InsegnanteRepository insegnanteRepository, PasswordEncoder passwordEncoder,
+                       AuthenticationManager authenticationManager, OspiteRepository ospiteRepository, TokenAttivazioneRepository tokenAttivazioneRepository,
+                       EmailSender emailSender, @Value("${app.frontendUrl}") String frontendUrl) {
         this.utenteRepository = utenteRepository;
         this.allievoRepository = allievoRepository;
         this.insegnanteRepository = insegnanteRepository;
@@ -40,6 +46,8 @@ public class AuthService {
         this.tokenAttivazioneRepository = tokenAttivazioneRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
+        this.emailSender = emailSender;
+        this.frontendUrl = frontendUrl;
     }
 
     public Allievo registraAllievo(NewAllievoDTO body) {
@@ -138,7 +146,15 @@ public class AuthService {
     private void generaTokenAttivazione(Utente utente) {
         TokenAttivazione tokenAttivazione = new TokenAttivazione(UUID.randomUUID().toString(), LocalDateTime.now().plusDays(2), utente);
         TokenAttivazione tokenSalvato = tokenAttivazioneRepository.save(tokenAttivazione);
-        System.out.println("Link di attivazione per " + utente.getEmail() + " token : " + tokenSalvato.getToken());
+
+        String linkAttivazione = frontendUrl + "/attiva-account?token=" + tokenSalvato.getToken();
+
+        String testo = "Ciao " + utente.getNome() + ",\n\n"
+                + "Il tuo account è stato creato. Per attivarlo e impostare la tua password, apri questo link:\n"
+                + linkAttivazione + "\n\n"
+                + "Il link scade tra 2 giorni.";
+        
+        emailSender.inviaEmail(utente.getEmail(), "Attiva il tuo account", testo);
     }
 
 
