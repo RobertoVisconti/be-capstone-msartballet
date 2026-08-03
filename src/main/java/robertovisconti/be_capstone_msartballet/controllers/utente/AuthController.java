@@ -69,6 +69,12 @@ public class AuthController {
         authService.richiediResetPassword(body);
     }
 
+    @PostMapping("/reinvia-attivazione")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void reinviaAttivazione(@RequestBody @Valid RichiestaResetPasswordDTO body) {
+        authService.reinviaAttivazione(body);
+    }
+
     @PostMapping("/reset-password")
     public LoginRespDTO resetPassword(@RequestBody @Valid ResetPasswordDTO body) {
         Utente utente = authService.resetPassword(body);

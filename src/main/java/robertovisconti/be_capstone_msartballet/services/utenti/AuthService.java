@@ -146,6 +146,13 @@ public class AuthService {
         // nessuna eccezione se l'email non esiste: evita di rivelare quali email sono registrate
     }
 
+    public void reinviaAttivazione(RichiestaResetPasswordDTO body) {
+        utenteRepository.findByEmail(body.email())
+                .filter(utente -> !Boolean.TRUE.equals(utente.getAccountAttivo()))
+                .ifPresent(this::generaTokenAttivazione);
+        // stesso principio: nessuna eccezione se l'email non esiste o l'account è già attivo
+    }
+
     public Utente resetPassword(ResetPasswordDTO body) {
         TokenResetPassword tokenResetPassword = tokenResetPasswordRepository.findByToken(body.token())
                 .orElseThrow(() -> new BadRequestException("Token di reset non valido!"));
