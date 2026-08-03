@@ -36,4 +36,12 @@ public class Iscrizione {
     public void setStato(StatoIscrizione stato) {
         this.stato = stato;
     }
+
+    public void setAllievo(Allievo allievo) {
+        this.allievo = allievo;
+    }
+
+    public void setCorso(Corso corso) {
+        this.corso = corso;
+    }
 }

@@ -51,4 +51,12 @@ public class Lezione {
     public void setPrezzoLezione(Double prezzoLezione) {
         this.prezzoLezione = prezzoLezione;
     }
+
+    public void setCorso(Corso corso) {
+        this.corso = corso;
+    }
+
+    public void setSala(Sala sala) {
+        this.sala = sala;
+    }
 }
