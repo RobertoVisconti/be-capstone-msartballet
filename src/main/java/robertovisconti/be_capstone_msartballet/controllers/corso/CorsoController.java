@@ -2,6 +2,7 @@ package robertovisconti.be_capstone_msartballet.controllers.corso;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import robertovisconti.be_capstone_msartballet.entities.Corso;
 import robertovisconti.be_capstone_msartballet.enums.GiornoSettimana;
@@ -23,6 +24,7 @@ public class CorsoController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public CorsoRespDTO creaCorso(@RequestBody @Valid NewCorsoDTO body) {
         return mappa(corsoService.creaCorso(body));
@@ -46,11 +48,13 @@ public class CorsoController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public CorsoRespDTO modificaCorso(@PathVariable UUID id, @RequestBody @Valid NewCorsoDTO body) {
         return mappa(corsoService.modificaCorso(id, body));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminaCorso(@PathVariable UUID id) {
         corsoService.eliminaCorso(id);
