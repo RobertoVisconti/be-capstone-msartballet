@@ -42,7 +42,7 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/auth/admin/**").hasRole("ADMIN").requestMatchers("/auth/**").permitAll()
                 .requestMatchers(org.springframework.http.HttpMethod.GET,
                         "/corsi/**", "/discipline/**", "/spettacoli/**", "/media/**").permitAll()
-                .requestMatchers("/discipline/**", "/sale/**", "/prodotti/**", "/media/**", "/spettacoli/**").hasRole("ADMIN")
+                .requestMatchers("/discipline/**", "/sale/**", "/prodotti/**", "/media/**", "/spettacoli/**", "/corsi/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
         );
 

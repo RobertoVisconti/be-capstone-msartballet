@@ -3,8 +3,9 @@ package robertovisconti.be_capstone_msartballet.payloadsDTO.galleryDTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.URL;
-import org.hibernate.validator.constraints.UUID;
 import robertovisconti.be_capstone_msartballet.enums.TipoMedia;
+
+import java.util.UUID;
 
 public record NewMediaDTO(
 

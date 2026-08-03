@@ -83,4 +83,8 @@ public class Corso {
     public void setPrezzoMensile(Double prezzoMensile) {
         this.prezzoMensile = prezzoMensile;
     }
+
+    public void setDisciplina(Disciplina disciplina) {
+        this.disciplina = disciplina;
+    }
 }

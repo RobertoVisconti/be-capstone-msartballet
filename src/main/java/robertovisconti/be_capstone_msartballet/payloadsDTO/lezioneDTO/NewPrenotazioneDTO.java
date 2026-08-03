@@ -1,7 +1,8 @@
 package robertovisconti.be_capstone_msartballet.payloadsDTO.lezioneDTO;
 
 import jakarta.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.UUID;
+
+import java.util.UUID;
 
 public record NewPrenotazioneDTO(
 
