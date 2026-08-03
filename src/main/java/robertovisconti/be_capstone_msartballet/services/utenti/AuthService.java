@@ -13,10 +13,7 @@ import robertovisconti.be_capstone_msartballet.enums.RuoloUtente;
 import robertovisconti.be_capstone_msartballet.exceptions.BadRequestException;
 import robertovisconti.be_capstone_msartballet.exceptions.UnauthorizedException;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.loginDTO.LoginDTO;
-import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.AttivazioneAccountDTO;
-import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.NewAllievoDTO;
-import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.NewInsegnanteDTO;
-import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.OspiteRegistrazioneDTO;
+import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.*;
 import robertovisconti.be_capstone_msartballet.repositories.utenti.*;
 import robertovisconti.be_capstone_msartballet.tools.EmailSender;
 
@@ -31,13 +28,14 @@ public class AuthService {
     private final InsegnanteRepository insegnanteRepository;
     private final OspiteRepository ospiteRepository;
     private final TokenAttivazioneRepository tokenAttivazioneRepository;
+    private final TokenResetPasswordRepository tokenResetPasswordRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final EmailSender emailSender;
     private final String frontendUrl;
 
     public AuthService(UtenteRepository utenteRepository, AllievoRepository allievoRepository, InsegnanteRepository insegnanteRepository, PasswordEncoder passwordEncoder,
-                       AuthenticationManager authenticationManager, OspiteRepository ospiteRepository, TokenAttivazioneRepository tokenAttivazioneRepository,
+                       AuthenticationManager authenticationManager, OspiteRepository ospiteRepository, TokenAttivazioneRepository tokenAttivazioneRepository, TokenResetPasswordRepository tokenResetPasswordRepository,
                        EmailSender emailSender, @Value("${app.frontendUrl}") String frontendUrl) {
         this.utenteRepository = utenteRepository;
         this.allievoRepository = allievoRepository;
@@ -48,6 +46,7 @@ public class AuthService {
         this.authenticationManager = authenticationManager;
         this.emailSender = emailSender;
         this.frontendUrl = frontendUrl;
+        this.tokenResetPasswordRepository = tokenResetPasswordRepository;
     }
 
     public Allievo registraAllievo(NewAllievoDTO body) {
@@ -142,6 +141,30 @@ public class AuthService {
         }
     }
 
+    public void richiediResetPassword(RichiestaResetPasswordDTO body) {
+        utenteRepository.findByEmail(body.email()).ifPresent(this::generaTokenResetPassword);
+        // nessuna eccezione se l'email non esiste: evita di rivelare quali email sono registrate
+    }
+
+    public Utente resetPassword(ResetPasswordDTO body) {
+        TokenResetPassword tokenResetPassword = tokenResetPasswordRepository.findByToken(body.token())
+                .orElseThrow(() -> new BadRequestException("Token di reset non valido!"));
+        if (Boolean.TRUE.equals(tokenResetPassword.getUtilizzato())) {
+            throw new BadRequestException("Questo link di reset è già stato utilizzato!");
+        }
+        if (tokenResetPassword.getDataScadenza().isBefore(LocalDateTime.now())) {
+            throw new BadRequestException("Il link di reset è scaduto, richiedine uno nuovo");
+        }
+        Utente utente = tokenResetPassword.getUtente();
+        utente.setPassword(passwordEncoder.encode(body.nuovaPassword()));
+        utenteRepository.save(utente);
+
+        tokenResetPassword.setUtilizzato(true);
+        tokenResetPasswordRepository.save(tokenResetPassword);
+
+        return utente;
+    }
+
 
     private void generaTokenAttivazione(Utente utente) {
         TokenAttivazione tokenAttivazione = new TokenAttivazione(UUID.randomUUID().toString(), LocalDateTime.now().plusDays(2), utente);
@@ -155,6 +178,20 @@ public class AuthService {
                 + "Il link scade tra 2 giorni.";
 
         emailSender.inviaEmail(utente.getEmail(), "Attiva il tuo account", testo);
+    }
+
+    private void generaTokenResetPassword(Utente utente) {
+        TokenResetPassword tokenResetPassword = new TokenResetPassword(UUID.randomUUID().toString(), LocalDateTime.now().plusHours(1), utente);
+        TokenResetPassword tokenSalvato = tokenResetPasswordRepository.save(tokenResetPassword);
+
+        String linkReset = frontendUrl + "/reset-password?token=" + tokenSalvato.getToken();
+
+        String testo = "Ciao " + utente.getNome() + ",\n\n"
+                + "Hai richiesto di reimpostare la password. Apri questo link per sceglierne una nuova:\n"
+                + linkReset + "\n\n"
+                + "Se non hai richiesto tu il reset, ignora questa email. Il link scade tra 1 ora.";
+
+        emailSender.inviaEmail(utente.getEmail(), "Reimposta la tua password", testo);
     }
 
 

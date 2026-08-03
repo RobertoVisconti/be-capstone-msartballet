@@ -63,6 +63,26 @@ public class AuthController {
         );
     }
 
+    @PostMapping("/password-dimenticata")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void passwordDimenticata(@RequestBody @Valid RichiestaResetPasswordDTO body) {
+        authService.richiediResetPassword(body);
+    }
+
+    @PostMapping("/reset-password")
+    public LoginRespDTO resetPassword(@RequestBody @Valid ResetPasswordDTO body) {
+        Utente utente = authService.resetPassword(body);
+        String token = tokenToolkit.tokenGenerator(utente);
+
+        return new LoginRespDTO(
+                token,
+                utente.getId(),
+                utente.getNome(),
+                utente.getCognome(),
+                utente.getRuolo()
+        );
+    }
+
     @PostMapping("/login")
     public LoginRespDTO login(@RequestBody @Valid LoginDTO body) {
         Utente utente = authService.login(body);
