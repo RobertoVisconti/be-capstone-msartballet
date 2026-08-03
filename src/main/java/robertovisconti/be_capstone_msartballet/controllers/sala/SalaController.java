@@ -2,12 +2,15 @@ package robertovisconti.be_capstone_msartballet.controllers.sala;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import robertovisconti.be_capstone_msartballet.entities.Sala;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.salaDTO.SalaDTO;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.salaDTO.SalaRespDTO;
 import robertovisconti.be_capstone_msartballet.services.sala.SalaService;
+import robertovisconti.be_capstone_msartballet.tools.CloudinaryUploaderService;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,9 +19,11 @@ import java.util.UUID;
 @RequestMapping("/sale")
 public class SalaController {
     private final SalaService salaService;
+    private final CloudinaryUploaderService cloudinaryUploaderService;
 
-    public SalaController(SalaService salaService) {
+    public SalaController(SalaService salaService, CloudinaryUploaderService cloudinaryUploaderService) {
         this.salaService = salaService;
+        this.cloudinaryUploaderService = cloudinaryUploaderService;
     }
 
     @PostMapping
@@ -42,6 +47,12 @@ public class SalaController {
     @PreAuthorize("hasRole('ADMIN')")
     public SalaRespDTO modificaSala(@PathVariable UUID id, @RequestBody @Valid SalaDTO body) {
         return mappa(salaService.modificaSala(id, body));
+    }
+
+    @PostMapping(value = "/{id}/immagine", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public SalaRespDTO caricaImmagine(@PathVariable UUID id, @RequestParam("file") MultipartFile file) {
+        return mappa(salaService.caricaImmagine(id, file));
     }
 
     @DeleteMapping("/{id}")

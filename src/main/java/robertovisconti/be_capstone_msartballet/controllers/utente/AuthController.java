@@ -1,4 +1,4 @@
-package robertovisconti.be_capstone_msartballet.controllers;
+package robertovisconti.be_capstone_msartballet.controllers.utente;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
