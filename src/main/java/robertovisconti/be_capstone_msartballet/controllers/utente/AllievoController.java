@@ -6,8 +6,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import robertovisconti.be_capstone_msartballet.entities.Allievo;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.AllievoRespDTO;
+import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.UtenteMapper;
 import robertovisconti.be_capstone_msartballet.services.utenti.AllievoService;
 
 import java.time.LocalDate;
@@ -32,42 +32,13 @@ public class AllievoController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate certificatoScadeEntro,
             @PageableDefault(size = 20) Pageable pageable
     ) {
-        return allievoService.trovaConFiltri(nome, cognome, accountAttivo, certificatoScadeEntro, pageable).map(this::mappa);
+        return allievoService.trovaConFiltri(nome, cognome, accountAttivo, certificatoScadeEntro, pageable).map(UtenteMapper::mappaAllievo);
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public AllievoRespDTO trovaPerId(@PathVariable UUID id) {
-        return mappa(allievoService.trovaPerId(id));
+        return UtenteMapper.mappaAllievo(allievoService.trovaPerId(id));
     }
 
-    private AllievoRespDTO mappa(Allievo allievo) {
-        return new AllievoRespDTO(
-                allievo.getId(),
-                allievo.getNome(),
-                allievo.getCognome(),
-                allievo.getEmail(),
-                allievo.getDataDiNascita(),
-                allievo.getImgProfilo(),
-                allievo.getRuolo(),
-                allievo.getDataRegistrazione(),
-                allievo.getAccountAttivo(),
-                allievo.getNumeroScarpetta(),
-                allievo.getMarcaScarpetta(),
-                allievo.getHaPunte(),
-                allievo.getMarcaPunte(),
-                allievo.getLarghezzaPunte(),
-                allievo.getTagliaBody(),
-                allievo.getTagliaCalzini(),
-                allievo.getAltezzaCm(),
-                allievo.getTagliaPantalone(),
-                allievo.getDataScadenzaCertificato(),
-                allievo.getContattoEmergenzaNome(),
-                allievo.getContattoEmergenzaTelefono(),
-                allievo.getCodiceFiscale(),
-                allievo.getQuotaIscrizionePagata(),
-                allievo.getConsensoPrivacyFoto(),
-                allievo.getNoteSegreteria()
-        );
-    }
 }

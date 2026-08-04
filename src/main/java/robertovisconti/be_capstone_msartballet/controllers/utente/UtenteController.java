@@ -3,13 +3,11 @@ package robertovisconti.be_capstone_msartballet.controllers.utente;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import robertovisconti.be_capstone_msartballet.entities.Utente;
+import robertovisconti.be_capstone_msartballet.entities.*;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.uploadDTO.ImmagineRespDTO;
+import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.UtenteMapper;
 import robertovisconti.be_capstone_msartballet.services.utenti.UtenteService;
 
 @RestController
@@ -20,6 +18,21 @@ public class UtenteController {
 
     public UtenteController(UtenteService utenteService) {
         this.utenteService = utenteService;
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public Object trovaProprioProfilo(@AuthenticationPrincipal Utente utente) {
+        if (utente instanceof Allievo allievo) {
+            return UtenteMapper.mappaAllievo(allievo);
+        }
+        if (utente instanceof Insegnante insegnante) {
+            return UtenteMapper.mappaInsegnante(insegnante);
+        }
+        if (utente instanceof Ospite ospite) {
+            return UtenteMapper.mappaOspite(ospite);
+        }
+        return UtenteMapper.mappaAdmin((Admin) utente);
     }
 
     @PostMapping(value = "/me/img-profilo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
