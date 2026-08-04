@@ -10,6 +10,7 @@ public record TransazioneRespDTO(
         String metodoPagamento,
         UUID idUtente,
         UUID idProdotto,
-        UUID idCorso
+        UUID idCorso,
+        UUID idSala
 ) {
 }

@@ -32,12 +32,16 @@ public class Transazione {
     private Utente utente;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_prodotto", nullable = false)
+    @JoinColumn(name = "id_prodotto")
     private Prodotto prodotto;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_corso")
     private Corso corso;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_sala")
+    private Sala sala;
 
     public Transazione(Double importo, String metodoPagamento) {
         this.importo = importo;
@@ -62,5 +66,9 @@ public class Transazione {
 
     public void setCorso(Corso corso) {
         this.corso = corso;
+    }
+
+    public void setSala(Sala sala) {
+        this.sala = sala;
     }
 }
