@@ -4,9 +4,11 @@ package robertovisconti.be_capstone_msartballet.tools;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class EmailSender {
 
@@ -31,7 +33,7 @@ public class EmailSender {
                 .queryString("text", testo)
                 .asJson();
         if (!risposta.isSuccess()) {
-            System.out.println("Invio email a " + destinatario + " fallito: " + risposta.getStatus() + " " + risposta.getStatusText());
+            log.error("Invio email a {} fallito: {}", destinatario, risposta.getStatus(), risposta.getStatusText());
         }
     }
 }

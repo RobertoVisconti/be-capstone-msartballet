@@ -1,5 +1,6 @@
 package robertovisconti.be_capstone_msartballet.runners;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -11,6 +12,7 @@ import robertovisconti.be_capstone_msartballet.repositories.utenti.UtenteReposit
 
 import java.time.LocalDate;
 
+@Slf4j
 @Component
 public class AdminRunner implements ApplicationRunner {
 
@@ -39,6 +41,6 @@ public class AdminRunner implements ApplicationRunner {
         }
         Admin admin = new Admin("Admin", "Sistema", adminEmail, passwordEncoder.encode(adminPassword), LocalDate.now());
         adminRepository.save(admin);
-        System.out.println("Admin di default creato con email: " + adminEmail);
+        log.info("Admin di dafault creato con email: {}", adminEmail);
     }
 }
