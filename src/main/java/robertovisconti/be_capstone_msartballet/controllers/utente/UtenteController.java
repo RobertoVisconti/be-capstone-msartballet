@@ -1,5 +1,7 @@
 package robertovisconti.be_capstone_msartballet.controllers.utente;
 
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import robertovisconti.be_capstone_msartballet.entities.*;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.uploadDTO.ImmagineRespDTO;
+import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.CambiaPasswordDTO;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.UtenteMapper;
 import robertovisconti.be_capstone_msartballet.services.utenti.UtenteService;
 
@@ -41,4 +44,12 @@ public class UtenteController {
         String url = utenteService.aggiornaImgProfilo(utente, file);
         return new ImmagineRespDTO(url);
     }
+
+    @PutMapping("/me/password")
+    @PreAuthorize("isAuthenticated()")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void cambiaPassword(@AuthenticationPrincipal Utente utente, @RequestBody @Valid CambiaPasswordDTO body) {
+        utenteService.cambiaPassword(utente, body);
+    }
+
 }
