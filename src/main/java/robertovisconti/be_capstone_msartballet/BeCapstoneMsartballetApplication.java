@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class BeCapstoneMsartballetApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(BeCapstoneMsartballetApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(BeCapstoneMsartballetApplication.class, args);
+    }
 
 }

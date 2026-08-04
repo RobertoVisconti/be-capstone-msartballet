@@ -57,4 +57,17 @@ public class InsegnanteService {
 
         return insegnanteRepository.save(insegnante);
     }
+
+    public Insegnante disattiva(UUID id) {
+        Insegnante insegnante = trovaPerId(id);
+        insegnante.setAccountAttivo(false);
+        return insegnanteRepository.save(insegnante);
+    }
+
+    public Insegnante riattiva(UUID id) {
+        Insegnante insegnante = trovaPerId(id);
+        insegnante.setAccountAttivo(true);
+        return insegnanteRepository.save(insegnante);
+    }
+
 }

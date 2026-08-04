@@ -42,5 +42,17 @@ public class InsegnanteController {
     public InsegnanteRespDTO modificaInsegnante(@PathVariable UUID id, @RequestBody @Valid AggiornaInsegnanteDTO body, @AuthenticationPrincipal Utente richiedente) {
         return UtenteMapper.mappaInsegnante(insegnanteService.modificaInsegnante(id, body, richiedente));
     }
-    
+
+    @PatchMapping("/{id}/disattiva")
+    @PreAuthorize("hasRole('ADMIN')")
+    public InsegnanteRespDTO disattiva(@PathVariable UUID id) {
+        return UtenteMapper.mappaInsegnante(insegnanteService.disattiva(id));
+    }
+
+    @PatchMapping("/{id}/riattiva")
+    @PreAuthorize("hasRole('ADMIN')")
+    public InsegnanteRespDTO riattiva(@PathVariable UUID id) {
+        return UtenteMapper.mappaInsegnante(insegnanteService.riattiva(id));
+    }
+
 }
