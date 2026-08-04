@@ -53,10 +53,6 @@ public class TransazioneService {
         return transazioneRepository.save(nuovaTransazione);
     }
 
-    public Page<Transazione> trovaConFiltri(UUID idUtente, UUID idProdotto, UUID idCorso, LocalDateTime dal, LocalDateTime al, Pageable pageable) {
-        return transazioneRepository.findAll(TransazioneSpecification.filtra(idUtente, idProdotto, idCorso, dal, al), pageable);
-    }
-
     public Transazione trovaPerId(UUID id) {
         return transazioneRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Nessuna transazione trovata con id " + id));
