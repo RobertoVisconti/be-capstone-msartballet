@@ -27,6 +27,7 @@ public class AuthService {
     private final AllievoRepository allievoRepository;
     private final InsegnanteRepository insegnanteRepository;
     private final OspiteRepository ospiteRepository;
+    private final AdminRepository adminRepository;
     private final TokenAttivazioneRepository tokenAttivazioneRepository;
     private final TokenResetPasswordRepository tokenResetPasswordRepository;
     private final PasswordEncoder passwordEncoder;
@@ -34,13 +35,14 @@ public class AuthService {
     private final EmailSender emailSender;
     private final String frontendUrl;
 
-    public AuthService(UtenteRepository utenteRepository, AllievoRepository allievoRepository, InsegnanteRepository insegnanteRepository, PasswordEncoder passwordEncoder,
-                       AuthenticationManager authenticationManager, OspiteRepository ospiteRepository, TokenAttivazioneRepository tokenAttivazioneRepository, TokenResetPasswordRepository tokenResetPasswordRepository,
-                       EmailSender emailSender, @Value("${app.frontendUrl}") String frontendUrl) {
+    public AuthService(UtenteRepository utenteRepository, AllievoRepository allievoRepository, InsegnanteRepository insegnanteRepository, AdminRepository adminRepository,
+                       PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, OspiteRepository ospiteRepository, TokenAttivazioneRepository tokenAttivazioneRepository,
+                       TokenResetPasswordRepository tokenResetPasswordRepository, EmailSender emailSender, @Value("${app.frontendUrl}") String frontendUrl) {
         this.utenteRepository = utenteRepository;
         this.allievoRepository = allievoRepository;
         this.insegnanteRepository = insegnanteRepository;
         this.ospiteRepository = ospiteRepository;
+        this.adminRepository = adminRepository;
         this.tokenAttivazioneRepository = tokenAttivazioneRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
@@ -112,6 +114,24 @@ public class AuthService {
         return insegnanteSalvato;
     }
 
+    public Admin registraAdmin(NewAdminDTO body) {
+        verificaEmailDisponibile(body.email());
+
+        Admin nuovoAdmin = new Admin();
+        nuovoAdmin.setNome(body.nome());
+        nuovoAdmin.setCognome(body.cognome());
+        nuovoAdmin.setEmail(body.email());
+        nuovoAdmin.setDataDiNascita(body.dataDiNascita());
+        nuovoAdmin.setImgProfilo(body.imgProfilo());
+        nuovoAdmin.setRuolo(RuoloUtente.ADMIN);
+        nuovoAdmin.setAccountAttivo(false);
+
+        Admin adminSalvato = adminRepository.save(nuovoAdmin);
+        generaTokenAttivazione(adminSalvato);
+
+        return adminSalvato;
+    }
+
     public Utente attivaAccount(AttivazioneAccountDTO body) {
         TokenAttivazione tokenAttivazione = tokenAttivazioneRepository.findByToken(body.token()).orElseThrow(() -> new BadRequestException("Token di attivazione non valido!"));
         if (Boolean.TRUE.equals(tokenAttivazione.getUtilizzato())) {
@@ -142,7 +162,9 @@ public class AuthService {
     }
 
     public void richiediResetPassword(RichiestaResetPasswordDTO body) {
-        utenteRepository.findByEmail(body.email()).ifPresent(this::generaTokenResetPassword);
+        utenteRepository.findByEmail(body.email())
+                .filter(Utente::getAccountAttivo)
+                .ifPresent(this::generaTokenResetPassword);
         // nessuna eccezione se l'email non esiste: evita di rivelare quali email sono registrate
     }
 
