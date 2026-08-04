@@ -1,11 +1,15 @@
 package robertovisconti.be_capstone_msartballet.controllers.utente;
 
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import robertovisconti.be_capstone_msartballet.entities.Utente;
+import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.AggiornaAllievoDTO;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.AllievoRespDTO;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.UtenteMapper;
 import robertovisconti.be_capstone_msartballet.services.utenti.AllievoService;
@@ -39,6 +43,12 @@ public class AllievoController {
     @PreAuthorize("hasRole('ADMIN')")
     public AllievoRespDTO trovaPerId(@PathVariable UUID id) {
         return UtenteMapper.mappaAllievo(allievoService.trovaPerId(id));
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','ALLIEVO')")
+    public AllievoRespDTO modificaAllievo(@PathVariable UUID id, @RequestBody @Valid AggiornaAllievoDTO body, @AuthenticationPrincipal Utente richiedente) {
+        return UtenteMapper.mappaAllievo(allievoService.modificaAllievo(id, body, richiedente));
     }
 
 }
