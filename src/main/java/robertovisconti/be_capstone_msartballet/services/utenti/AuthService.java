@@ -142,7 +142,9 @@ public class AuthService {
     }
 
     public void richiediResetPassword(RichiestaResetPasswordDTO body) {
-        utenteRepository.findByEmail(body.email()).ifPresent(this::generaTokenResetPassword);
+        utenteRepository.findByEmail(body.email())
+                .filter(Utente::getAccountAttivo)
+                .ifPresent(this::generaTokenResetPassword);
         // nessuna eccezione se l'email non esiste: evita di rivelare quali email sono registrate
     }
 
