@@ -75,4 +75,16 @@ public class AllievoService {
         return allievoRepository.save(allievo);
     }
 
+    public Allievo disattiva(UUID id) {
+        Allievo allievo = trovaPerId(id);
+        allievo.setAccountAttivo(false);
+        return allievoRepository.save(allievo);
+    }
+
+    public Allievo riattiva(UUID id) {
+        Allievo allievo = trovaPerId(id);
+        allievo.setAccountAttivo(true);
+        return allievoRepository.save(allievo);
+    }
+
 }

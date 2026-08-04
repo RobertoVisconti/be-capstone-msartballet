@@ -51,4 +51,16 @@ public class AllievoController {
         return UtenteMapper.mappaAllievo(allievoService.modificaAllievo(id, body, richiedente));
     }
 
+    @PatchMapping("/{id}/disattiva")
+    @PreAuthorize("hasRole('ADMIN')")
+    public AllievoRespDTO disattiva(@PathVariable UUID id) {
+        return UtenteMapper.mappaAllievo(allievoService.disattiva(id));
+    }
+
+    @PatchMapping("/{id}/riattiva")
+    @PreAuthorize("hasRole('ADMIN')")
+    public AllievoRespDTO riattiva(@PathVariable UUID id) {
+        return UtenteMapper.mappaAllievo(allievoService.riattiva(id));
+    }
+
 }
