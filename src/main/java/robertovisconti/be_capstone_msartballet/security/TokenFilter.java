@@ -39,21 +39,19 @@ public class TokenFilter extends OncePerRequestFilter {
         try {
             String authHeader = request.getHeader("Authorization");
 
-            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                throw new UnauthorizedException("Token mancante o formato non valido. Atteso: 'Bearer <token>'");
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                String token = authHeader.substring(7);
+                tokenToolkit.tokenVerify(token);
+
+                UUID idUtente = tokenToolkit.extractId(token);
+                Utente utente = utenteRepository.findById(idUtente)
+                        .orElseThrow(() -> new UnauthorizedException("Utente associato al token non trovato"));
+
+                Authentication authentication = new UsernamePasswordAuthenticationToken(
+                        utente, null, utente.getAuthorities()
+                );
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-
-            String token = authHeader.substring(7);
-            tokenToolkit.tokenVerify(token);
-
-            UUID idUtente = tokenToolkit.extractId(token);
-            Utente utente = utenteRepository.findById(idUtente)
-                    .orElseThrow(() -> new UnauthorizedException("Utente associato al token non trovato"));
-
-            Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    utente, null, utente.getAuthorities()
-            );
-            SecurityContextHolder.getContext().setAuthentication(authentication);
 
             filterChain.doFilter(request, response);
         } catch (Exception ex) {
