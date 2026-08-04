@@ -4,10 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import robertovisconti.be_capstone_msartballet.entities.Allievo;
-import robertovisconti.be_capstone_msartballet.entities.Insegnante;
-import robertovisconti.be_capstone_msartballet.entities.Ospite;
-import robertovisconti.be_capstone_msartballet.entities.Utente;
+import robertovisconti.be_capstone_msartballet.entities.*;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.loginDTO.LoginDTO;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.loginDTO.LoginRespDTO;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.*;
@@ -40,6 +37,14 @@ public class AuthController {
     public InsegnanteRespDTO registraInsegnante(@RequestBody @Valid NewInsegnanteDTO body) {
         Insegnante nuovoInsegnante = authService.registraInsegnante(body);
         return mappaInsegnante(nuovoInsegnante);
+    }
+
+    @PostMapping("/admin/admins")
+    @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.CREATED)
+    public AdminRespDTO registraAdmin(@RequestBody @Valid NewAdminDTO body) {
+        Admin nuovoAdmin = authService.registraAdmin(body);
+        return mappaAdmin(nuovoAdmin);
     }
 
     @PostMapping("/register/ospite")
@@ -159,6 +164,20 @@ public class AuthController {
                 ospite.getImgProfilo(),
                 ospite.getRuolo(),
                 ospite.getDataRegistrazione()
+        );
+    }
+
+    private AdminRespDTO mappaAdmin(Admin admin) {
+        return new AdminRespDTO(
+                admin.getId(),
+                admin.getNome(),
+                admin.getCognome(),
+                admin.getEmail(),
+                admin.getDataDiNascita(),
+                admin.getImgProfilo(),
+                admin.getRuolo(),
+                admin.getDataRegistrazione(),
+                admin.getAccountAttivo()
         );
     }
 
