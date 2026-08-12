@@ -55,6 +55,17 @@ public class UtenteMapper {
         );
     }
 
+    public static InsegnantePubblicoRespDTO mappaInsegnantePubblico(Insegnante insegnante) {
+        return new InsegnantePubblicoRespDTO(
+                insegnante.getId(),
+                insegnante.getNome(),
+                insegnante.getCognome(),
+                insegnante.getImgProfilo(),
+                insegnante.getBiografia()
+        );
+    }
+
+
     public static OspiteRespDTO mappaOspite(Ospite ospite) {
         return new OspiteRespDTO(
                 ospite.getId(),
@@ -81,4 +92,6 @@ public class UtenteMapper {
                 admin.getAccountAttivo()
         );
     }
+
+
 }

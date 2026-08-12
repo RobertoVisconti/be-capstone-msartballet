@@ -54,7 +54,8 @@ public class SecurityConfig {
                 .requestMatchers("/auth/admin/**").authenticated()
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers(org.springframework.http.HttpMethod.GET,
-                        "/corsi/**", "/discipline/**", "/spettacoli/**", "/media/**", "/sale/**", "/prodotti/**", "/lezioni/**").permitAll()
+                        "/corsi/**", "/discipline/**", "/spettacoli/**", "/media/**", "/sale/**", "/prodotti/**", "/lezioni/**",
+                        "/utenti/insegnanti/pubblico").permitAll()
                 .anyRequest().authenticated());
 
         httpSecurity.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
