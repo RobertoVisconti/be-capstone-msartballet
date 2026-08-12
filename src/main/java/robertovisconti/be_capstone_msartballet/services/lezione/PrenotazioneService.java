@@ -1,5 +1,8 @@
 package robertovisconti.be_capstone_msartballet.services.lezione;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import robertovisconti.be_capstone_msartballet.entities.Lezione;
 import robertovisconti.be_capstone_msartballet.entities.Prenotazione;
 import robertovisconti.be_capstone_msartballet.entities.Utente;
@@ -13,11 +16,9 @@ import robertovisconti.be_capstone_msartballet.repositories.lezioni.Prenotazione
 import robertovisconti.be_capstone_msartballet.repositories.utenti.UtenteRepository;
 import robertovisconti.be_capstone_msartballet.specification.PrenotazioneSpecification;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import java.util.UUID;
 
+@Service
 public class PrenotazioneService {
 
     private final PrenotazioneRepository prenotazioneRepository;

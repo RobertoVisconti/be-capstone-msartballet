@@ -9,6 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import robertovisconti.be_capstone_msartballet.entities.Utente;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.AggiornaInsegnanteDTO;
+import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.InsegnantePubblicoRespDTO;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.InsegnanteRespDTO;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.UtenteMapper;
 import robertovisconti.be_capstone_msartballet.services.utenti.InsegnanteService;
@@ -29,6 +30,11 @@ public class InsegnanteController {
     @PreAuthorize("hasRole('ADMIN')")
     public Page<InsegnanteRespDTO> trovaTutti(@PageableDefault(size = 20) Pageable pageable) {
         return insegnanteService.trovaTutti(pageable).map(UtenteMapper::mappaInsegnante);
+    }
+
+    @GetMapping("/pubblico")
+    public Page<InsegnantePubblicoRespDTO> trovaAttivi(@PageableDefault(size = 20) Pageable pageable) {
+        return insegnanteService.trovaAttivi(pageable).map(UtenteMapper::mappaInsegnantePubblico);
     }
 
     @GetMapping("/{id}")
