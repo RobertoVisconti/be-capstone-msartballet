@@ -4,15 +4,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import robertovisconti.be_capstone_msartballet.entities.Lezione;
+import robertovisconti.be_capstone_msartballet.entities.Ospite;
 import robertovisconti.be_capstone_msartballet.entities.Prenotazione;
 import robertovisconti.be_capstone_msartballet.entities.Utente;
 import robertovisconti.be_capstone_msartballet.enums.RuoloUtente;
 import robertovisconti.be_capstone_msartballet.enums.StatoPrenotazione;
+import robertovisconti.be_capstone_msartballet.exceptions.BadRequestException;
 import robertovisconti.be_capstone_msartballet.exceptions.NotFoundException;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.lezioneDTO.CambiaStatoPrenotazioneDTO;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.lezioneDTO.NewPrenotazioneDTO;
+import robertovisconti.be_capstone_msartballet.payloadsDTO.lezioneDTO.NewPrenotazioneOspiteDTO;
 import robertovisconti.be_capstone_msartballet.repositories.lezioni.LezioneRepository;
 import robertovisconti.be_capstone_msartballet.repositories.lezioni.PrenotazioneRepository;
+import robertovisconti.be_capstone_msartballet.repositories.utenti.OspiteRepository;
 import robertovisconti.be_capstone_msartballet.repositories.utenti.UtenteRepository;
 import robertovisconti.be_capstone_msartballet.specification.PrenotazioneSpecification;
 
@@ -24,11 +28,13 @@ public class PrenotazioneService {
     private final PrenotazioneRepository prenotazioneRepository;
     private final UtenteRepository utenteRepository;
     private final LezioneRepository lezioneRepository;
+    private final OspiteRepository ospiteRepository;
 
-    public PrenotazioneService(PrenotazioneRepository prenotazioneRepository, UtenteRepository utenteRepository, LezioneRepository lezioneRepository) {
+    public PrenotazioneService(PrenotazioneRepository prenotazioneRepository, UtenteRepository utenteRepository, LezioneRepository lezioneRepository, OspiteRepository ospiteRepository) {
         this.prenotazioneRepository = prenotazioneRepository;
         this.utenteRepository = utenteRepository;
         this.lezioneRepository = lezioneRepository;
+        this.ospiteRepository = ospiteRepository;
     }
 
     public Prenotazione creaPrenotazione(NewPrenotazioneDTO body, Utente richiedente) {
@@ -37,6 +43,15 @@ public class PrenotazioneService {
         Lezione lezione = trovaLezione(body.idLezione());
         Prenotazione nuovaPrenotazione = new Prenotazione(StatoPrenotazione.IN_ATTESA);
         nuovaPrenotazione.setUtente(utente);
+        nuovaPrenotazione.setLezione(lezione);
+        return prenotazioneRepository.save(nuovaPrenotazione);
+    }
+
+    public Prenotazione creaPrenotazioneOspite(NewPrenotazioneOspiteDTO body) {
+        Ospite ospite = trovaOCreaOspite(body);
+        Lezione lezione = trovaLezione(body.idLezione());
+        Prenotazione nuovaPrenotazione = new Prenotazione(StatoPrenotazione.IN_ATTESA);
+        nuovaPrenotazione.setUtente(ospite);
         nuovaPrenotazione.setLezione(lezione);
         return prenotazioneRepository.save(nuovaPrenotazione);
     }
@@ -68,5 +83,23 @@ public class PrenotazioneService {
     private Lezione trovaLezione(UUID idLezione) {
         return lezioneRepository.findById(idLezione)
                 .orElseThrow(() -> new NotFoundException("Nessuna lezione trovata con id " + idLezione));
+    }
+
+    private Ospite trovaOCreaOspite(NewPrenotazioneOspiteDTO body) {
+        return utenteRepository.findByEmail(body.email())
+                .map(utente -> {
+                    if (!(utente instanceof Ospite ospite)) {
+                        throw new BadRequestException("Questa email è già registrata con un altro ruolo: effettua il login per prenotare.");
+                    }
+                    if (body.telefono() != null && !body.telefono().isBlank()) {
+                        ospite.setTelefono(body.telefono());
+                    }
+                    return ospiteRepository.save(ospite);
+                })
+                .orElseGet(() -> {
+                    Ospite nuovoOspite = new Ospite(body.nome(), body.cognome(), body.email(), null);
+                    nuovoOspite.setTelefono(body.telefono());
+                    return ospiteRepository.save(nuovoOspite);
+                });
     }
 }
