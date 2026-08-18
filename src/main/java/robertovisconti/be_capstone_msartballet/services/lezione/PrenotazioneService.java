@@ -48,28 +48,15 @@ public class PrenotazioneService {
         return prenotazioneRepository.save(nuovaPrenotazione);
     }
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
     public Prenotazione creaPrenotazioneOspite(NewPrenotazioneOspiteDTO body) {
         Ospite ospite = trovaOCreaOspite(body);
         Lezione lezione = trovaLezione(body.idLezione());
-        verificaNonGiaPrenotata(ospite.getId(), lezione.getId());
-=======
-    public Prenotazione creaPrenotazioneOspite(NewPrenotazioneOspiteDTO body) {
-        Ospite ospite = trovaOCreaOspite(body);
-        Lezione lezione = trovaLezione(body.idLezione());
->>>>>>> develop
         Prenotazione nuovaPrenotazione = new Prenotazione(StatoPrenotazione.IN_ATTESA);
         nuovaPrenotazione.setUtente(ospite);
         nuovaPrenotazione.setLezione(lezione);
         return prenotazioneRepository.save(nuovaPrenotazione);
     }
 
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> develop
     public Page<Prenotazione> trovaConFiltri(UUID idUtente, UUID idLezione, StatoPrenotazione stato, Pageable pageable) {
         return prenotazioneRepository.findAll(PrenotazioneSpecification.filtra(idUtente, idLezione, stato), pageable);
     }
@@ -98,11 +85,6 @@ public class PrenotazioneService {
         return lezioneRepository.findById(idLezione)
                 .orElseThrow(() -> new NotFoundException("Nessuna lezione trovata con id " + idLezione));
     }
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> develop
 
     private Ospite trovaOCreaOspite(NewPrenotazioneOspiteDTO body) {
         return utenteRepository.findByEmail(body.email())
@@ -121,14 +103,11 @@ public class PrenotazioneService {
                     return ospiteRepository.save(nuovoOspite);
                 });
     }
-<<<<<<< HEAD
+
 
     private void verificaNonGiaPrenotata(UUID idUtente, UUID idLezione) {
         if (prenotazioneRepository.existsByUtente_IdAndLezione_Id(idUtente, idLezione)) {
             throw new BadRequestException("Hai già una prenotazione per questa lezione.");
         }
     }
->>>>>>> Stashed changes
-=======
->>>>>>> develop
-}
+}}
