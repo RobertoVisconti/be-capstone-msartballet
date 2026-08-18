@@ -11,11 +11,12 @@ public class TransazioneSpecification {
     private TransazioneSpecification() {
     }
 
-    public static Specification<Transazione> filtra(UUID idUtente, UUID idProdotto, UUID idCorso, LocalDateTime dal, LocalDateTime al) {
+    public static Specification<Transazione> filtra(UUID idUtente, UUID idProdotto, UUID idCorso, UUID idSala, LocalDateTime dal, LocalDateTime al) {
         return Specification.allOf(
                 haIdUtente(idUtente),
                 haIdProdotto(idProdotto),
                 haIdCorso(idCorso),
+                haIdSala(idSala),
                 daData(dal),
                 aData(al)
         );
@@ -33,6 +34,10 @@ public class TransazioneSpecification {
         return (root, query, cb) -> idCorso == null ? null : cb.equal(root.get("corso").get("id"), idCorso);
     }
 
+    private static Specification<Transazione> haIdSala(UUID idSala) {
+        return (root, query, cb) -> idSala == null ? null : cb.equal(root.get("sala").get("id"), idSala);
+    }
+
     private static Specification<Transazione> daData(LocalDateTime dal) {
         return (root, query, cb) -> dal == null ? null : cb.greaterThanOrEqualTo(root.get("data_transazione"), dal);
     }
@@ -40,4 +45,6 @@ public class TransazioneSpecification {
     private static Specification<Transazione> aData(LocalDateTime al) {
         return (root, query, cb) -> al == null ? null : cb.lessThanOrEqualTo(root.get("data_transazione"), al);
     }
+
+
 }

@@ -4,15 +4,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import robertovisconti.be_capstone_msartballet.entities.Lezione;
+import robertovisconti.be_capstone_msartballet.entities.Ospite;
 import robertovisconti.be_capstone_msartballet.entities.Prenotazione;
 import robertovisconti.be_capstone_msartballet.entities.Utente;
 import robertovisconti.be_capstone_msartballet.enums.RuoloUtente;
 import robertovisconti.be_capstone_msartballet.enums.StatoPrenotazione;
+import robertovisconti.be_capstone_msartballet.exceptions.BadRequestException;
 import robertovisconti.be_capstone_msartballet.exceptions.NotFoundException;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.lezioneDTO.CambiaStatoPrenotazioneDTO;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.lezioneDTO.NewPrenotazioneDTO;
+import robertovisconti.be_capstone_msartballet.payloadsDTO.lezioneDTO.NewPrenotazioneOspiteDTO;
 import robertovisconti.be_capstone_msartballet.repositories.lezioni.LezioneRepository;
 import robertovisconti.be_capstone_msartballet.repositories.lezioni.PrenotazioneRepository;
+import robertovisconti.be_capstone_msartballet.repositories.utenti.OspiteRepository;
 import robertovisconti.be_capstone_msartballet.repositories.utenti.UtenteRepository;
 import robertovisconti.be_capstone_msartballet.specification.PrenotazioneSpecification;
 
@@ -24,11 +28,13 @@ public class PrenotazioneService {
     private final PrenotazioneRepository prenotazioneRepository;
     private final UtenteRepository utenteRepository;
     private final LezioneRepository lezioneRepository;
+    private final OspiteRepository ospiteRepository;
 
-    public PrenotazioneService(PrenotazioneRepository prenotazioneRepository, UtenteRepository utenteRepository, LezioneRepository lezioneRepository) {
+    public PrenotazioneService(PrenotazioneRepository prenotazioneRepository, UtenteRepository utenteRepository, LezioneRepository lezioneRepository, OspiteRepository ospiteRepository) {
         this.prenotazioneRepository = prenotazioneRepository;
         this.utenteRepository = utenteRepository;
         this.lezioneRepository = lezioneRepository;
+        this.ospiteRepository = ospiteRepository;
     }
 
     public Prenotazione creaPrenotazione(NewPrenotazioneDTO body, Utente richiedente) {
@@ -42,19 +48,28 @@ public class PrenotazioneService {
         return prenotazioneRepository.save(nuovaPrenotazione);
     }
 
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
     public Prenotazione creaPrenotazioneOspite(NewPrenotazioneOspiteDTO body) {
         Ospite ospite = trovaOCreaOspite(body);
         Lezione lezione = trovaLezione(body.idLezione());
         verificaNonGiaPrenotata(ospite.getId(), lezione.getId());
+=======
+    public Prenotazione creaPrenotazioneOspite(NewPrenotazioneOspiteDTO body) {
+        Ospite ospite = trovaOCreaOspite(body);
+        Lezione lezione = trovaLezione(body.idLezione());
+>>>>>>> develop
         Prenotazione nuovaPrenotazione = new Prenotazione(StatoPrenotazione.IN_ATTESA);
         nuovaPrenotazione.setUtente(ospite);
         nuovaPrenotazione.setLezione(lezione);
         return prenotazioneRepository.save(nuovaPrenotazione);
     }
 
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+>>>>>>> develop
     public Page<Prenotazione> trovaConFiltri(UUID idUtente, UUID idLezione, StatoPrenotazione stato, Pageable pageable) {
         return prenotazioneRepository.findAll(PrenotazioneSpecification.filtra(idUtente, idLezione, stato), pageable);
     }
@@ -83,8 +98,11 @@ public class PrenotazioneService {
         return lezioneRepository.findById(idLezione)
                 .orElseThrow(() -> new NotFoundException("Nessuna lezione trovata con id " + idLezione));
     }
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
+=======
+>>>>>>> develop
 
     private Ospite trovaOCreaOspite(NewPrenotazioneOspiteDTO body) {
         return utenteRepository.findByEmail(body.email())
@@ -103,6 +121,7 @@ public class PrenotazioneService {
                     return ospiteRepository.save(nuovoOspite);
                 });
     }
+<<<<<<< HEAD
 
     private void verificaNonGiaPrenotata(UUID idUtente, UUID idLezione) {
         if (prenotazioneRepository.existsByUtente_IdAndLezione_Id(idUtente, idLezione)) {
@@ -110,4 +129,6 @@ public class PrenotazioneService {
         }
     }
 >>>>>>> Stashed changes
+=======
+>>>>>>> develop
 }

@@ -32,7 +32,7 @@ public abstract class Utente implements UserDetails {
     @Column(nullable = false)
     private String cognome;
 
-    @Column(name = "data_di_nascita", nullable = false)
+    @Column(name = "data_di_nascita")
     private LocalDate dataDiNascita;
 
     @Column(nullable = false, unique = true)

@@ -13,7 +13,14 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 public class Ospite extends Utente {
+
+    private String telefono;
+
     public Ospite(String nome, String cognome, String email, LocalDate dataDiNascita) {
         super(nome, cognome, email, null, null, RuoloUtente.OSPITE, dataDiNascita);
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 }

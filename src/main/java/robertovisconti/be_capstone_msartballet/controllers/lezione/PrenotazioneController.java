@@ -1,6 +1,9 @@
 package robertovisconti.be_capstone_msartballet.controllers.lezione;
 
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -10,12 +13,9 @@ import robertovisconti.be_capstone_msartballet.entities.Utente;
 import robertovisconti.be_capstone_msartballet.enums.StatoPrenotazione;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.lezioneDTO.CambiaStatoPrenotazioneDTO;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.lezioneDTO.NewPrenotazioneDTO;
+import robertovisconti.be_capstone_msartballet.payloadsDTO.lezioneDTO.NewPrenotazioneOspiteDTO;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.lezioneDTO.PrenotazioneRespDTO;
 import robertovisconti.be_capstone_msartballet.services.lezione.PrenotazioneService;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 
 import java.util.UUID;
 
@@ -33,6 +33,12 @@ public class PrenotazioneController {
     @ResponseStatus(HttpStatus.CREATED)
     public PrenotazioneRespDTO creaPrenotazione(@RequestBody @Valid NewPrenotazioneDTO body, @AuthenticationPrincipal Utente richiedente) {
         return mappa(prenotazioneService.creaPrenotazione(body, richiedente));
+    }
+
+    @PostMapping("/ospite")
+    @ResponseStatus(HttpStatus.CREATED)
+    public PrenotazioneRespDTO creaPrenotazioneOspite(@RequestBody @Valid NewPrenotazioneOspiteDTO body) {
+        return mappa(prenotazioneService.creaPrenotazioneOspite(body));
     }
 
     @GetMapping

@@ -30,6 +30,11 @@ public class InsegnanteService {
         return insegnanteRepository.findAll(pageable);
     }
 
+    public Page<Insegnante> trovaAttivi(Pageable pageable) {
+        return insegnanteRepository.findByAccountAttivoTrue(pageable);
+    }
+
+
     public Insegnante trovaPerId(UUID id) {
         return insegnanteRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Nessun insegnante trovato con id " + id));
