@@ -10,6 +10,7 @@ public record OspiteRespDTO(
         String nome,
         String cognome,
         String email,
+        String telefono,
         LocalDate dataDiNascita,
         String imgProfilo,
         RuoloUtente ruolo,

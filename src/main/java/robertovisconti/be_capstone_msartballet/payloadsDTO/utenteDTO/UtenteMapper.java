@@ -61,6 +61,7 @@ public class UtenteMapper {
                 ospite.getNome(),
                 ospite.getCognome(),
                 ospite.getEmail(),
+                ospite.getTelefono(),
                 ospite.getDataDiNascita(),
                 ospite.getImgProfilo(),
                 ospite.getRuolo(),

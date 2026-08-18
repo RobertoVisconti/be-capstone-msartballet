@@ -35,12 +35,26 @@ public class PrenotazioneService {
         UUID idUtenteEffettivo = richiedente.getRuolo() == RuoloUtente.ADMIN ? body.idUtente() : richiedente.getId();
         Utente utente = trovaUtente(idUtenteEffettivo);
         Lezione lezione = trovaLezione(body.idLezione());
+        verificaNonGiaPrenotata(utente.getId(), lezione.getId());
         Prenotazione nuovaPrenotazione = new Prenotazione(StatoPrenotazione.IN_ATTESA);
         nuovaPrenotazione.setUtente(utente);
         nuovaPrenotazione.setLezione(lezione);
         return prenotazioneRepository.save(nuovaPrenotazione);
     }
 
+<<<<<<< Updated upstream
+=======
+    public Prenotazione creaPrenotazioneOspite(NewPrenotazioneOspiteDTO body) {
+        Ospite ospite = trovaOCreaOspite(body);
+        Lezione lezione = trovaLezione(body.idLezione());
+        verificaNonGiaPrenotata(ospite.getId(), lezione.getId());
+        Prenotazione nuovaPrenotazione = new Prenotazione(StatoPrenotazione.IN_ATTESA);
+        nuovaPrenotazione.setUtente(ospite);
+        nuovaPrenotazione.setLezione(lezione);
+        return prenotazioneRepository.save(nuovaPrenotazione);
+    }
+
+>>>>>>> Stashed changes
     public Page<Prenotazione> trovaConFiltri(UUID idUtente, UUID idLezione, StatoPrenotazione stato, Pageable pageable) {
         return prenotazioneRepository.findAll(PrenotazioneSpecification.filtra(idUtente, idLezione, stato), pageable);
     }
@@ -69,4 +83,31 @@ public class PrenotazioneService {
         return lezioneRepository.findById(idLezione)
                 .orElseThrow(() -> new NotFoundException("Nessuna lezione trovata con id " + idLezione));
     }
+<<<<<<< Updated upstream
+=======
+
+    private Ospite trovaOCreaOspite(NewPrenotazioneOspiteDTO body) {
+        return utenteRepository.findByEmail(body.email())
+                .map(utente -> {
+                    if (!(utente instanceof Ospite ospite)) {
+                        throw new BadRequestException("Questa email è già registrata con un altro ruolo: effettua il login per prenotare.");
+                    }
+                    if (body.telefono() != null && !body.telefono().isBlank()) {
+                        ospite.setTelefono(body.telefono());
+                    }
+                    return ospiteRepository.save(ospite);
+                })
+                .orElseGet(() -> {
+                    Ospite nuovoOspite = new Ospite(body.nome(), body.cognome(), body.email(), null);
+                    nuovoOspite.setTelefono(body.telefono());
+                    return ospiteRepository.save(nuovoOspite);
+                });
+    }
+
+    private void verificaNonGiaPrenotata(UUID idUtente, UUID idLezione) {
+        if (prenotazioneRepository.existsByUtente_IdAndLezione_Id(idUtente, idLezione)) {
+            throw new BadRequestException("Hai già una prenotazione per questa lezione.");
+        }
+    }
+>>>>>>> Stashed changes
 }
