@@ -110,4 +110,4 @@ public class PrenotazioneService {
             throw new BadRequestException("Hai già una prenotazione per questa lezione.");
         }
     }
-}}
+}
