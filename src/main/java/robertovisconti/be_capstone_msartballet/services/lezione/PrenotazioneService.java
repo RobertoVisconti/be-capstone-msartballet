@@ -16,8 +16,8 @@ import robertovisconti.be_capstone_msartballet.payloadsDTO.lezioneDTO.NewPrenota
 import robertovisconti.be_capstone_msartballet.payloadsDTO.lezioneDTO.NewPrenotazioneOspiteDTO;
 import robertovisconti.be_capstone_msartballet.repositories.lezioni.LezioneRepository;
 import robertovisconti.be_capstone_msartballet.repositories.lezioni.PrenotazioneRepository;
-import robertovisconti.be_capstone_msartballet.repositories.utenti.OspiteRepository;
 import robertovisconti.be_capstone_msartballet.repositories.utenti.UtenteRepository;
+import robertovisconti.be_capstone_msartballet.services.utenti.OspiteService;
 import robertovisconti.be_capstone_msartballet.specification.PrenotazioneSpecification;
 
 import java.util.UUID;
@@ -28,13 +28,13 @@ public class PrenotazioneService {
     private final PrenotazioneRepository prenotazioneRepository;
     private final UtenteRepository utenteRepository;
     private final LezioneRepository lezioneRepository;
-    private final OspiteRepository ospiteRepository;
+    private final OspiteService ospiteService;
 
-    public PrenotazioneService(PrenotazioneRepository prenotazioneRepository, UtenteRepository utenteRepository, LezioneRepository lezioneRepository, OspiteRepository ospiteRepository) {
+    public PrenotazioneService(PrenotazioneRepository prenotazioneRepository, UtenteRepository utenteRepository, LezioneRepository lezioneRepository, OspiteService ospiteService) {
         this.prenotazioneRepository = prenotazioneRepository;
         this.utenteRepository = utenteRepository;
         this.lezioneRepository = lezioneRepository;
-        this.ospiteRepository = ospiteRepository;
+        this.ospiteService = ospiteService;
     }
 
     public Prenotazione creaPrenotazione(NewPrenotazioneDTO body, Utente richiedente) {
@@ -49,7 +49,7 @@ public class PrenotazioneService {
     }
 
     public Prenotazione creaPrenotazioneOspite(NewPrenotazioneOspiteDTO body) {
-        Ospite ospite = trovaOCreaOspite(body);
+        Ospite ospite = ospiteService.trovaOCrea(body.nome(), body.cognome(), body.email(), body.telefono());
         Lezione lezione = trovaLezione(body.idLezione());
         Prenotazione nuovaPrenotazione = new Prenotazione(StatoPrenotazione.IN_ATTESA);
         nuovaPrenotazione.setUtente(ospite);
@@ -85,25 +85,6 @@ public class PrenotazioneService {
         return lezioneRepository.findById(idLezione)
                 .orElseThrow(() -> new NotFoundException("Nessuna lezione trovata con id " + idLezione));
     }
-
-    private Ospite trovaOCreaOspite(NewPrenotazioneOspiteDTO body) {
-        return utenteRepository.findByEmail(body.email())
-                .map(utente -> {
-                    if (!(utente instanceof Ospite ospite)) {
-                        throw new BadRequestException("Questa email è già registrata con un altro ruolo: effettua il login per prenotare.");
-                    }
-                    if (body.telefono() != null && !body.telefono().isBlank()) {
-                        ospite.setTelefono(body.telefono());
-                    }
-                    return ospiteRepository.save(ospite);
-                })
-                .orElseGet(() -> {
-                    Ospite nuovoOspite = new Ospite(body.nome(), body.cognome(), body.email(), null);
-                    nuovoOspite.setTelefono(body.telefono());
-                    return ospiteRepository.save(nuovoOspite);
-                });
-    }
-
 
     private void verificaNonGiaPrenotata(UUID idUtente, UUID idLezione) {
         if (prenotazioneRepository.existsByUtente_IdAndLezione_Id(idUtente, idLezione)) {
