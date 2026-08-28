@@ -4,7 +4,10 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import robertovisconti.be_capstone_msartballet.entities.*;
+import robertovisconti.be_capstone_msartballet.entities.Admin;
+import robertovisconti.be_capstone_msartballet.entities.Allievo;
+import robertovisconti.be_capstone_msartballet.entities.Insegnante;
+import robertovisconti.be_capstone_msartballet.entities.Utente;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.loginDTO.LoginDTO;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.loginDTO.LoginRespDTO;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.*;
@@ -45,13 +48,6 @@ public class AuthController {
     public AdminRespDTO registraAdmin(@RequestBody @Valid NewAdminDTO body) {
         Admin nuovoAdmin = authService.registraAdmin(body);
         return UtenteMapper.mappaAdmin(nuovoAdmin);
-    }
-
-    @PostMapping("/register/ospite")
-    @ResponseStatus(HttpStatus.CREATED)
-    public OspiteRespDTO registraOspite(@RequestBody @Valid OspiteRegistrazioneDTO body) {
-        Ospite nuovoOspite = authService.registraOspite(body);
-        return UtenteMapper.mappaOspite(nuovoOspite);
     }
 
     @PostMapping("/attiva-account")

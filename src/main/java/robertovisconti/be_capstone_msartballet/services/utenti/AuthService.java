@@ -26,7 +26,6 @@ public class AuthService {
     private final UtenteRepository utenteRepository;
     private final AllievoRepository allievoRepository;
     private final InsegnanteRepository insegnanteRepository;
-    private final OspiteRepository ospiteRepository;
     private final AdminRepository adminRepository;
     private final TokenAttivazioneRepository tokenAttivazioneRepository;
     private final TokenResetPasswordRepository tokenResetPasswordRepository;
@@ -36,12 +35,11 @@ public class AuthService {
     private final String frontendUrl;
 
     public AuthService(UtenteRepository utenteRepository, AllievoRepository allievoRepository, InsegnanteRepository insegnanteRepository, AdminRepository adminRepository,
-                       PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, OspiteRepository ospiteRepository, TokenAttivazioneRepository tokenAttivazioneRepository,
+                       PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, TokenAttivazioneRepository tokenAttivazioneRepository,
                        TokenResetPasswordRepository tokenResetPasswordRepository, EmailSender emailSender, @Value("${app.frontendUrl}") String frontendUrl) {
         this.utenteRepository = utenteRepository;
         this.allievoRepository = allievoRepository;
         this.insegnanteRepository = insegnanteRepository;
-        this.ospiteRepository = ospiteRepository;
         this.adminRepository = adminRepository;
         this.tokenAttivazioneRepository = tokenAttivazioneRepository;
         this.passwordEncoder = passwordEncoder;
@@ -84,14 +82,6 @@ public class AuthService {
         generaTokenAttivazione(allievoSalvato);
 
         return allievoSalvato;
-    }
-
-
-    public Ospite registraOspite(OspiteRegistrazioneDTO body) {
-        verificaEmailDisponibile(body.email());
-        Ospite nuovoOspite = new Ospite(body.nome(), body.cognome(), body.email(), body.dataDiNascita());
-        return ospiteRepository.save(nuovoOspite);
-
     }
 
     public Insegnante registraInsegnante(NewInsegnanteDTO body) {
@@ -230,4 +220,3 @@ public class AuthService {
         }
     }
 }
-
