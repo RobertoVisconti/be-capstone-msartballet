@@ -36,7 +36,7 @@ public class OspiteService {
         return utenteRepository.findByEmail(email)
                 .map(utente -> {
                     if (!(utente instanceof Ospite ospite)) {
-                        throw new BadRequestException("Questa email è già registrata con un altro ruolo: effettua il login per continuare.");
+                        throw new BadRequestException("Questa email è già registrata: effettua il login per prenotare.");
                     }
                     if (telefono != null && !telefono.isBlank()) {
                         ospite.setTelefono(telefono);
