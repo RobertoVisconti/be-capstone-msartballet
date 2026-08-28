@@ -4,6 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import robertovisconti.be_capstone_msartballet.entities.*;
+import robertovisconti.be_capstone_msartballet.exceptions.BadRequestException;
+
 import robertovisconti.be_capstone_msartballet.exceptions.NotFoundException;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.pagamentoDTO.NewTransazioneDTO;
 import robertovisconti.be_capstone_msartballet.repositories.corsi.CorsoRepository;
@@ -34,6 +36,12 @@ public class TransazioneService {
 
     public Transazione creaTransazione(NewTransazioneDTO body) {
         Utente utente = trovaUtente(body.idUtente());
+        if (utente instanceof Ospite) {
+
+            throw new BadRequestException("Un ospite non può effettuare acquisti.");
+
+        }
+
         Transazione nuovaTransazione;
         if (body.idProdotto() != null) {
             Prodotto prodotto = trovaProdotto(body.idProdotto());
@@ -48,6 +56,7 @@ public class TransazioneService {
             nuovaTransazione = new Transazione(sala.getPrezzoAffitto(), body.metodoPagamento());
             nuovaTransazione.setSala(sala);
         }
+
 
         nuovaTransazione.setUtente(utente);
         return transazioneRepository.save(nuovaTransazione);
