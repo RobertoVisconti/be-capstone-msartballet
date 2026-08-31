@@ -1,5 +1,7 @@
 package robertovisconti.be_capstone_msartballet.services.lezione;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import robertovisconti.be_capstone_msartballet.entities.Corso;
 import robertovisconti.be_capstone_msartballet.entities.Lezione;
@@ -11,9 +13,6 @@ import robertovisconti.be_capstone_msartballet.repositories.corsi.CorsoRepositor
 import robertovisconti.be_capstone_msartballet.repositories.lezioni.LezioneRepository;
 import robertovisconti.be_capstone_msartballet.repositories.sale.SalaRepository;
 import robertovisconti.be_capstone_msartballet.specification.LezioneSpecification;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -84,4 +83,5 @@ public class LezioneService {
         if (sovrapposta) {
             throw new BadRequestException("La sala scelta è già occupata da un'altra lezione in questo orario");
         }
+    }
 }
