@@ -2,6 +2,7 @@ package robertovisconti.be_capstone_msartballet.exceptions;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
@@ -90,7 +91,18 @@ public class ErrorsHandler {
         return new ErrorsDTO("Il corpo della richiesta non è un JSON valido", LocalDateTime.now());
     }
 
-    // 8. GESTIONE DI QUALSIASI ALTRA ECCEZIONE IMPREVISTA (500 Internal Server Error)
+    // 8. GESTIONE VINCOLO DI INTEGRITÀ REFERENZIALE (409 Conflict)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorsDTO handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        log.warn("Vincolo di integrità violato: {}", ex.getMostSpecificCause().getMessage());
+        return new ErrorsDTO(
+                "Impossibile completare l'operazione: la risorsa è collegata ad altri dati esistenti.",
+                LocalDateTime.now()
+        );
+    }
+
+    // 9. GESTIONE DI QUALSIASI ALTRA ECCEZIONE IMPREVISTA (500 Internal Server Error)
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorsDTO handleGenericError(Exception ex) {
