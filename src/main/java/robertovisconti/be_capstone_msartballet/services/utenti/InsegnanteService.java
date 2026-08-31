@@ -71,7 +71,9 @@ public class InsegnanteService {
 
     public Insegnante riattiva(UUID id) {
         Insegnante insegnante = trovaPerId(id);
-        insegnante.setAccountAttivo(true);
+        if (insegnante.isMaiAttivato()) {
+            throw new BadRequestException("Questo account non è mai stato attivato: non può essere riattivato. Usa \"Reinvia link\".");
+        }
         return insegnanteRepository.save(insegnante);
     }
 

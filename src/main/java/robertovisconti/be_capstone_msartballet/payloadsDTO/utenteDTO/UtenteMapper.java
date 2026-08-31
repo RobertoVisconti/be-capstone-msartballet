@@ -21,6 +21,7 @@ public class UtenteMapper {
                 allievo.getRuolo(),
                 allievo.getDataRegistrazione(),
                 allievo.getAccountAttivo(),
+                allievo.isMaiAttivato(),
                 allievo.getNumeroScarpetta(),
                 allievo.getMarcaScarpetta(),
                 allievo.getHaPunte(),
@@ -50,6 +51,7 @@ public class UtenteMapper {
                 insegnante.getImgProfilo(),
                 insegnante.getRuolo(),
                 insegnante.getDataRegistrazione(),
+                insegnante.isMaiAttivato(),
                 insegnante.getAccountAttivo(),
                 insegnante.getBiografia()
         );

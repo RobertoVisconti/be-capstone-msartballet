@@ -15,6 +15,7 @@ public record AllievoRespDTO(
         String imgProfilo,
         RuoloUtente ruolo,
         LocalDate dataRegistrazione,
+        Boolean maiAttivato,
         Boolean accountAttivo,
         String numeroScarpetta,
         String marcaScarpetta,

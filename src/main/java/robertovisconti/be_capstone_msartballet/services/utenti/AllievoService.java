@@ -83,7 +83,9 @@ public class AllievoService {
 
     public Allievo riattiva(UUID id) {
         Allievo allievo = trovaPerId(id);
-        allievo.setAccountAttivo(true);
+        if (allievo.isMaiAttivato()) {
+            throw new BadRequestException("Questo account non è mai stato attivato: non può essere riattivato. Usa \"Reinvia link\".");
+        }
         return allievoRepository.save(allievo);
     }
 

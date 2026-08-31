@@ -96,6 +96,10 @@ public abstract class Utente implements UserDetails {
         this.accountAttivo = accountAttivo;
     }
 
+    public boolean isMaiAttivato() {
+        return this.password == null;
+    }
+    
     // UserDetails
     @Override
     public String getUsername() {

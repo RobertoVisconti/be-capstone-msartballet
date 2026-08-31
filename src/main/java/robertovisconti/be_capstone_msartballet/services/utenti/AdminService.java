@@ -33,7 +33,9 @@ public class AdminService {
 
     public Admin riattiva(UUID id) {
         Admin admin = trovaPerId(id);
-        admin.setAccountAttivo(true);
+        if (admin.isMaiAttivato()) {
+            throw new BadRequestException("Questo account non è mai stato attivato: non può essere riattivato. Usa \"Reinvia link\".");
+        }
         return adminRepository.save(admin);
     }
 

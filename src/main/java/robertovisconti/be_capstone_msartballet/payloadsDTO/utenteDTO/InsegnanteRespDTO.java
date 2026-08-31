@@ -15,6 +15,7 @@ public record InsegnanteRespDTO(
         RuoloUtente ruolo,
         LocalDate dataRegistrazione,
         Boolean accountAttivo,
+        Boolean maiAttivato,
         String biografia
 ) {
 }

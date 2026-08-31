@@ -33,7 +33,7 @@ public class EmailSender {
                 .queryString("text", testo)
                 .asJson();
         if (!risposta.isSuccess()) {
-            log.error("Invio email a {} fallito: {}", destinatario, risposta.getStatus(), risposta.getStatusText());
+            log.error("Invio email a {} fallito ({}): {}", destinatario, risposta.getStatus(), risposta.getStatusText());
         }
     }
 }
