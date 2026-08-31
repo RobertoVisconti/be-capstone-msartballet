@@ -36,6 +36,7 @@ public class AdminService {
         if (admin.isMaiAttivato()) {
             throw new BadRequestException("Questo account non è mai stato attivato: non può essere riattivato. Usa \"Reinvia link\".");
         }
+        admin.setAccountAttivo(true);
         return adminRepository.save(admin);
     }
 

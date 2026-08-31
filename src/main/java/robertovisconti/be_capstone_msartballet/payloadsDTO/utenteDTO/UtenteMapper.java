@@ -51,8 +51,8 @@ public class UtenteMapper {
                 insegnante.getImgProfilo(),
                 insegnante.getRuolo(),
                 insegnante.getDataRegistrazione(),
-                insegnante.isMaiAttivato(),
                 insegnante.getAccountAttivo(),
+                insegnante.isMaiAttivato(),
                 insegnante.getBiografia()
         );
     }

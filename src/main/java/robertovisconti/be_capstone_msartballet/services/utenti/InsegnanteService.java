@@ -74,6 +74,7 @@ public class InsegnanteService {
         if (insegnante.isMaiAttivato()) {
             throw new BadRequestException("Questo account non è mai stato attivato: non può essere riattivato. Usa \"Reinvia link\".");
         }
+        insegnante.setAccountAttivo(true);
         return insegnanteRepository.save(insegnante);
     }
 

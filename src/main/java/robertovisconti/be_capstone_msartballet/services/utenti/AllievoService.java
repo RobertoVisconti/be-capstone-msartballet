@@ -86,6 +86,7 @@ public class AllievoService {
         if (allievo.isMaiAttivato()) {
             throw new BadRequestException("Questo account non è mai stato attivato: non può essere riattivato. Usa \"Reinvia link\".");
         }
+        allievo.setAccountAttivo(true);
         return allievoRepository.save(allievo);
     }
 
