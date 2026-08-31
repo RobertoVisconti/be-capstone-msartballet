@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import robertovisconti.be_capstone_msartballet.entities.Corso;
 import robertovisconti.be_capstone_msartballet.entities.Lezione;
 import robertovisconti.be_capstone_msartballet.entities.Sala;
+import robertovisconti.be_capstone_msartballet.exceptions.BadRequestException;
 import robertovisconti.be_capstone_msartballet.exceptions.NotFoundException;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.lezioneDTO.NewLezioneDTO;
 import robertovisconti.be_capstone_msartballet.repositories.corsi.CorsoRepository;
@@ -33,6 +34,7 @@ public class LezioneService {
     public Lezione creaLezione(NewLezioneDTO body) {
         Corso corso = trovaCorso(body.idCorso());
         Sala sala = trovaSala(body.idSala());
+        verificaDisponibilitaSala(sala.getId(), body.dataOraInizio(), body.dataOraFine(), null);
         Lezione nuovaLezione = new Lezione(body.dataOraInizio(), body.dataOraFine(), body.prezzoLezione());
         nuovaLezione.setCorso(corso);
         nuovaLezione.setSala(sala);
@@ -50,11 +52,13 @@ public class LezioneService {
 
     public Lezione modificaLezione(UUID id, NewLezioneDTO body) {
         Lezione lezione = trovaPerId(id);
+        Sala sala = trovaSala(body.idSala());
+        verificaDisponibilitaSala(sala.getId(), body.dataOraInizio(), body.dataOraFine(), id);
         lezione.setDataOraInizio(body.dataOraInizio());
         lezione.setDataOraFine(body.dataOraFine());
         lezione.setPrezzoLezione(body.prezzoLezione());
         lezione.setCorso(trovaCorso(body.idCorso()));
-        lezione.setSala(trovaSala(body.idSala()));
+        lezione.setSala(sala);
         return lezioneRepository.save(lezione);
     }
 
@@ -71,4 +75,13 @@ public class LezioneService {
         return salaRepository.findById(idSala)
                 .orElseThrow(() -> new NotFoundException("Nessuna sala trovata con id " + idSala));
     }
+
+    private void verificaDisponibilitaSala(UUID idSala, LocalDateTime inizio, LocalDateTime fine, UUID idLezioneEsclusa) {
+        boolean sovrapposta = lezioneRepository
+                .findBySala_IdAndDataOraInizioLessThanAndDataOraFineGreaterThan(idSala, fine, inizio)
+                .stream()
+                .anyMatch(l -> !l.getId().equals(idLezioneEsclusa));
+        if (sovrapposta) {
+            throw new BadRequestException("La sala scelta è già occupata da un'altra lezione in questo orario");
+        }
 }
