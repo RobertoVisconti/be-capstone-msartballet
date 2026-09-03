@@ -20,6 +20,7 @@ import robertovisconti.be_capstone_msartballet.repositories.utenti.UtenteReposit
 import robertovisconti.be_capstone_msartballet.services.utenti.OspiteService;
 import robertovisconti.be_capstone_msartballet.specification.PrenotazioneSpecification;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Service
@@ -58,8 +59,8 @@ public class PrenotazioneService {
         return prenotazioneRepository.save(nuovaPrenotazione);
     }
 
-    public Page<Prenotazione> trovaConFiltri(UUID idUtente, UUID idLezione, StatoPrenotazione stato, Pageable pageable) {
-        return prenotazioneRepository.findAll(PrenotazioneSpecification.filtra(idUtente, idLezione, stato), pageable);
+    public Page<Prenotazione> trovaConFiltri(UUID idUtente, UUID idLezione, StatoPrenotazione stato, UUID idCorso, LocalDate dataDa, LocalDate dataA, Pageable pageable) {
+        return prenotazioneRepository.findAll(PrenotazioneSpecification.filtra(idUtente, idLezione, stato, idCorso, dataDa, dataA), pageable);
     }
 
     public Prenotazione trovaPerId(UUID id) {

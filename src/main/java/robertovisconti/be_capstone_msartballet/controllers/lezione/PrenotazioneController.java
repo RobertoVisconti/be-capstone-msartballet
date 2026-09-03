@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,6 +18,7 @@ import robertovisconti.be_capstone_msartballet.payloadsDTO.lezioneDTO.NewPrenota
 import robertovisconti.be_capstone_msartballet.payloadsDTO.lezioneDTO.PrenotazioneRespDTO;
 import robertovisconti.be_capstone_msartballet.services.lezione.PrenotazioneService;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @RestController
@@ -41,15 +43,27 @@ public class PrenotazioneController {
         return mappa(prenotazioneService.creaPrenotazioneOspite(body));
     }
 
+    @GetMapping("/mie")
+    @PreAuthorize("hasRole('ALLIEVO')")
+    public Page<PrenotazioneRespDTO> trovaMie(
+            @AuthenticationPrincipal Utente richiedente,
+            @PageableDefault(size = 20) Pageable pageable
+    ) {
+        return prenotazioneService.trovaConFiltri(richiedente.getId(), null, null, null, null, null, pageable).map(this::mappa);
+    }
+
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public Page<PrenotazioneRespDTO> trovaConFiltri(
             @RequestParam(required = false) UUID idUtente,
             @RequestParam(required = false) UUID idLezione,
             @RequestParam(required = false) StatoPrenotazione stato,
+            @RequestParam(required = false) UUID idCorso,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataDa,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataA,
             @PageableDefault(size = 20) Pageable pageable
     ) {
-        return prenotazioneService.trovaConFiltri(idUtente, idLezione, stato, pageable).map(this::mappa);
+        return prenotazioneService.trovaConFiltri(idUtente, idLezione, stato, idCorso, dataDa, dataA, pageable).map(this::mappa);
     }
 
     @GetMapping("/{id}")

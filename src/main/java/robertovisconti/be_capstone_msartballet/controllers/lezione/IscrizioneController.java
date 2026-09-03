@@ -35,6 +35,15 @@ public class IscrizioneController {
         return mappa(iscrizioneService.creaIscrizione(body, richiedente));
     }
 
+    @GetMapping("/mie")
+    @PreAuthorize("hasRole('ALLIEVO')")
+    public Page<IscrizioneRespDTO> trovaMie(
+            @AuthenticationPrincipal Utente richiedente,
+            @PageableDefault(size = 20) Pageable pageable
+    ) {
+        return iscrizioneService.trovaConFiltri(richiedente.getId(), null, null, pageable).map(this::mappa);
+    }
+
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public Page<IscrizioneRespDTO> trovaConFiltri(
