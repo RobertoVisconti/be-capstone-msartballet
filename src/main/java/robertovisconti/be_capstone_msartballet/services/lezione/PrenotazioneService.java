@@ -51,6 +51,7 @@ public class PrenotazioneService {
     public Prenotazione creaPrenotazioneOspite(NewPrenotazioneOspiteDTO body) {
         Ospite ospite = ospiteService.trovaOCrea(body.nome(), body.cognome(), body.email(), body.telefono());
         Lezione lezione = trovaLezione(body.idLezione());
+        verificaNonGiaPrenotata(ospite.getId(), lezione.getId());
         Prenotazione nuovaPrenotazione = new Prenotazione(StatoPrenotazione.IN_ATTESA);
         nuovaPrenotazione.setUtente(ospite);
         nuovaPrenotazione.setLezione(lezione);
