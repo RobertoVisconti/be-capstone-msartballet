@@ -92,7 +92,9 @@ public class UtenteMapper {
                 admin.getImgProfilo(),
                 admin.getRuolo(),
                 admin.getDataRegistrazione(),
-                admin.getAccountAttivo()
+                admin.getAccountAttivo(),
+                admin.isMaiAttivato(),
+                admin.getProtetto()
         );
     }
 

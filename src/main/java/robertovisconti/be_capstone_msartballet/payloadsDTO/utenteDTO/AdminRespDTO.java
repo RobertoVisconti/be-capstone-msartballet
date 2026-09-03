@@ -14,6 +14,8 @@ public record AdminRespDTO(
         String imgProfilo,
         RuoloUtente ruolo,
         LocalDate dataRegistrazione,
-        Boolean accountAttivo
+        Boolean accountAttivo,
+        Boolean maiAttivato,
+        Boolean protetto
 ) {
 }

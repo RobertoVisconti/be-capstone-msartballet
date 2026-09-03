@@ -1,5 +1,7 @@
 package robertovisconti.be_capstone_msartballet.services.utenti;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import robertovisconti.be_capstone_msartballet.entities.Admin;
 import robertovisconti.be_capstone_msartballet.exceptions.BadRequestException;
@@ -15,6 +17,10 @@ public class AdminService {
 
     public AdminService(AdminRepository adminRepository) {
         this.adminRepository = adminRepository;
+    }
+
+    public Page<Admin> trovaTutti(Pageable pageable) {
+        return adminRepository.findAll(pageable);
     }
 
     public Admin trovaPerId(UUID id) {
