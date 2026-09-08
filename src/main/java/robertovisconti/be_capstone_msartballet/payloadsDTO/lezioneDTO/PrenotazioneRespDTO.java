@@ -11,6 +11,8 @@ public record PrenotazioneRespDTO(
         LocalDateTime dataPrenotazione,
         UUID idUtente,
         String nomeUtente,
-        UUID idLezione
+        UUID idLezione,
+        String titoloCorso,
+        LocalDateTime dataOraLezione
 ) {
 }
