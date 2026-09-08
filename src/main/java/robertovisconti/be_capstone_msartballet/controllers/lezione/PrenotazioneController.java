@@ -92,7 +92,9 @@ public class PrenotazioneController {
                 prenotazione.getDataPrenotazione(),
                 prenotazione.getUtente().getId(),
                 prenotazione.getUtente().getNome() + " " + prenotazione.getUtente().getCognome(),
-                prenotazione.getLezione().getId()
+                prenotazione.getLezione().getId(),
+                prenotazione.getLezione().getCorso().getTitolo(),
+                prenotazione.getLezione().getDataOraInizio()
         );
     }
 }
