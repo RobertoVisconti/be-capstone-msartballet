@@ -24,13 +24,14 @@ public class EmailSender {
         this.apiKey = apiKey;
     }
 
-    public void inviaEmail(String destinatario, String oggetto, String testo) {
+    public void inviaEmail(String destinatario, String oggetto, String testo, String html) {
         HttpResponse<JsonNode> risposta = Unirest.post("https://api.mailgun.net/v3/" + domainName + "/messages")
                 .basicAuth("api", apiKey)
-                .queryString("from", "Scuola di Danza <postmaster@" + domainName + ">")
+                .queryString("from", "MS Art Ballet <postmaster@" + domainName + ">")
                 .queryString("to", destinatario)
                 .queryString("subject", oggetto)
                 .queryString("text", testo)
+                .queryString("html", html)
                 .asJson();
         if (!risposta.isSuccess()) {
             log.error("Invio email a {} fallito ({}): {}", destinatario, risposta.getStatus(), risposta.getStatusText());
