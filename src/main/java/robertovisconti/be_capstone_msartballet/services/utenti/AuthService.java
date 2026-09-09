@@ -16,6 +16,7 @@ import robertovisconti.be_capstone_msartballet.payloadsDTO.loginDTO.LoginDTO;
 import robertovisconti.be_capstone_msartballet.payloadsDTO.utenteDTO.*;
 import robertovisconti.be_capstone_msartballet.repositories.utenti.*;
 import robertovisconti.be_capstone_msartballet.tools.EmailSender;
+import robertovisconti.be_capstone_msartballet.tools.EmailTemplate;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -190,13 +191,25 @@ public class AuthService {
         TokenAttivazione tokenSalvato = tokenAttivazioneRepository.save(tokenAttivazione);
 
         String linkAttivazione = frontendUrl + "/attiva-account?token=" + tokenSalvato.getToken();
+        String linkLogin = frontendUrl + "/login";
 
         String testo = "Ciao " + utente.getNome() + ",\n\n"
                 + "Il tuo account è stato creato. Per attivarlo e impostare la tua password, apri questo link:\n"
                 + linkAttivazione + "\n\n"
-                + "Il link scade tra 2 giorni.";
+                + "Il link scade tra 2 giorni.\n\n"
+                + "Una volta attivato l'account, potrai accedere in qualsiasi momento da qui:\n"
+                + linkLogin;
 
-        emailSender.inviaEmail(utente.getEmail(), "Attiva il tuo account", testo);
+        String html = EmailTemplate.build(
+                utente.getNome(),
+                "Il tuo account è stato creato. Clicca il pulsante qui sotto per attivarlo e impostare la tua password.",
+                "Attiva account",
+                linkAttivazione,
+                "Il link scade tra 2 giorni.<br><br>Una volta attivato l'account, potrai accedere in qualsiasi momento su "
+                        + "<a href=\"" + linkLogin + "\" style=\"color:#d10068;text-decoration:none;\">" + linkLogin + "</a>"
+        );
+
+        emailSender.inviaEmail(utente.getEmail(), "Attiva il tuo account", testo, html);
     }
 
     private void generaTokenResetPassword(Utente utente) {
@@ -204,13 +217,25 @@ public class AuthService {
         TokenResetPassword tokenSalvato = tokenResetPasswordRepository.save(tokenResetPassword);
 
         String linkReset = frontendUrl + "/reset-password?token=" + tokenSalvato.getToken();
+        String linkLogin = frontendUrl + "/login";
 
         String testo = "Ciao " + utente.getNome() + ",\n\n"
                 + "Hai richiesto di reimpostare la password. Apri questo link per sceglierne una nuova:\n"
                 + linkReset + "\n\n"
-                + "Se non hai richiesto tu il reset, ignora questa email. Il link scade tra 1 ora.";
+                + "Se non hai richiesto tu il reset, ignora questa email. Il link scade tra 1 ora.\n\n"
+                + "Puoi accedere in qualsiasi momento da qui:\n"
+                + linkLogin;
 
-        emailSender.inviaEmail(utente.getEmail(), "Reimposta la tua password", testo);
+        String html = EmailTemplate.build(
+                utente.getNome(),
+                "Hai richiesto di reimpostare la password. Clicca il pulsante qui sotto per sceglierne una nuova.",
+                "Reimposta password",
+                linkReset,
+                "Se non hai richiesto tu il reset, ignora questa email. Il link scade tra 1 ora.<br><br>Puoi accedere in qualsiasi momento su "
+                        + "<a href=\"" + linkLogin + "\" style=\"color:#d10068;text-decoration:none;\">" + linkLogin + "</a>"
+        );
+
+        emailSender.inviaEmail(utente.getEmail(), "Reimposta la tua password", testo, html);
     }
 
 
